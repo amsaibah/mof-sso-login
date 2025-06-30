@@ -1,0 +1,117 @@
+/* Base page layout */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Center content container */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Login card styling */
+.login-card {
+    background-color: white;
+    padding: 2.5rem;
+    border-radius: 8px;
+    border-top: 4px solid #1a3e6f; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo section */
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.logo-img {
+    height: 100px;
+    width: auto;
+    max-width: 300px;
+    object-fit: contain;
+    margin-bottom: 1.5rem;
+}
+
+/* Ministry title text */
+.ministry-title {
+    color: #1a3e6f;
+    font-weight: 700;
+    font-size: 2.2rem;
+    margin: 0;
+    line-height: 1.2;
+    text-align: center;
+}
+
+/* Login form header */
+.login-card h2 {
+    color: #2c3e50;
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+/* Form elements */
+.form-control {
+    padding: 0.75rem;
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #1a3e6f;
+    box-shadow: 0 0 0 0.25rem rgba(26, 62, 111, 0.25);
+}
+
+/* Action buttons */
+.btn-primary {
+    background-color: #1a3e6f;
+    border-color: #1a3e6f;
+    padding: 0.75rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #14305a;
+}
+
+/* Footer links */
+.help-text {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-top: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .login-card {
+        padding: 2rem;
+    }
+    .logo-img {
+        height: 80px;
+        max-width: 250px;
+    }
+    .ministry-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .login-card {
+        padding: 1.5rem;
+    }
+    .logo-img {
+        height: 70px;
+        max-width: 200px;
+    }
+}
