@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ministry of Finance - Employee Portal</title>
+    <style>
+        /* Government Portal Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f7fa;
+            color: #333;
+        }
+        
+        /* Header with Ministry branding */
+        .portal-header {
+            background: #1a3e6f;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-bottom: 4px solid #b38b00;
+            display: flex;
+            align-items: center;
+        }
+        
+        .ministry-logo {
+            height: 50px;
+            margin-right: 1.5rem;
+        }
+        
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        /* User navigation bar */
+        .user-bar {
+            background: #14305a;
+            padding: 0.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+        }
+        
+        /* Main portal grid */
+        .portal-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: calc(100vh - 120px);
+        }
+        
+        /* Side navigation */
+        .side-nav {
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 1.5rem;
+        }
+        
+        .nav-item {
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        /* Main content area */
+        .content-area {
+            padding: 2rem;
+        }
+        
+        /* System cards */
+        .systems-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .system-card {
+            background: white;
+            border-top: 4px solid #1a3e6f;
+            border-radius: 4px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .system-icon {
+            font-size: 2rem;
+            color: #1a3e6f;
+            margin-bottom: 1rem;
+        }
+    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Ministry Header -->
+    <header class="portal-header">
+        <img src="mof-logo.png" alt="Ministry Logo" class="ministry-logo">
+        <div class="header-title">Ministry of Finance - Employee Portal</div>
+    </header>
+    
+    <!-- User Bar -->
+    <div class="user-bar">
+        <div>Welcome, <strong>John Doe</strong> (Budget Department)</div>
+        <div>
+            <i class="fas fa-bell"></i>
+            <i class="fas fa-envelope"></i>
+            <button style="background: #dc3545; border: none; color: white; padding: 0.3rem 0.8rem; margin-left: 1rem;">Logout</button>
+        </div>
+    </div>
+    
+    <!-- Main Portal Content -->
+    <div class="portal-grid">
+        <!-- Side Navigation -->
+        <aside class="side-nav">
+            <h3>SSO Systems</h3>
+            <div class="nav-item"><i class="fas fa-folder"></i> Document Management</div>
+            <div class="nav-item"><i class="fas fa-calendar-alt"></i> Leave Request</div>
+            <div class="nav-item"><i class="fas fa-clock"></i> Timekeeping</div>
+            <div class="nav-item"><i class="fas fa-door-open"></i> Meeting Rooms</div>
+            <div class="nav-item"><i class="fas fa-car"></i> Car Booking</div>
+            <div class="nav-item"><i class="fas fa-archive"></i> Document Storage</div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="content-area">
+            <h1>Ministry Systems Dashboard</h1>
+            <p>Access all integrated government systems through single sign-on</p>
+            
+            <div class="systems-grid">
+                <!-- Document Management -->
+                <div class="system-card">
+                    <div class="system-icon"><i class="fas fa-folder-open"></i></div>
+                    <h3>Document Management</h3>
+                    <p>Official document workflow system</p>
+                    <button style="background: #1a3e6f; color: white; border: none; padding: 0.5rem 1rem; margin-top: 1rem;">Access System</button>
+                </div>
+                
+                <!-- Leave Request -->
+                <div class="system-card">
+                    <div class="system-icon"><i class="fas fa-calendar-check"></i></div>
+                    <h3>Leave Request</h3>
+                    <p>Submit and track leave applications</p>
+                    <button style="background: #1a3e6f; color: white; border: none; padding: 0.5rem 1rem; margin-top: 1rem;">Access System</button>
+                </div>
+                
+                <!-- Timekeeping -->
+                <div class="system-card">
+                    <div class="system-icon"><i class="fas fa-user-clock"></i></div>
+                    <h3>Timekeeping</h3>
+                    <p>Attendance and timesheet system</p>
+                    <button style="background: #1a3e6f; color: white; border: none; padding: 0.5rem 1rem; margin-top: 1rem;">Access System</button>
+                </div>
+                
+                <!-- Meeting Rooms -->
+                <div class="system-card">
+                    <div class="system-icon"><i class="fas fa-door-open"></i></div>
+                    <h3>Meeting Rooms</h3>
+                    <p>Book conference facilities</p>
+                    <button style="background: #1a3e6f; color: white; border: none; padding: 0.5rem 1rem; margin-top: 1rem;">Access System</button>
+                </div>
+                
+                <!-- Car Booking -->
+                <div class="system-card">
+                    <div class="system-icon"><i class="fas fa-car"></i></div>
+                    <h3>Car Booking</h3>
+                    <p>Official vehicle reservation</p>
+                    <button style="background: #1a3e6f; color: white; border: none; padding: 0.5rem 1rem; margin-top: 1rem;">Access System</button>
+                </div>
+                
+                <!-- Document Storage -->
+                <div class="system-card">
+                    <div class="system-icon"><i class="fas fa-archive"></i></div>
+                    <h3>Document Storage</h3>
+                    <p>Secure government document repository</p>
+                    <button style="background: #1a3e6f; color: white; border: none; padding: 0.5rem 1rem; margin-top: 1rem;">Access System</button>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
