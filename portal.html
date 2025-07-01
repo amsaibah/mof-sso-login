@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ministry of Finance - Employee Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Government Portal Styles */
         body {
             font-family: 'Segoe UI', Tahoma, sans-serif;
             margin: 0;
@@ -13,8 +14,7 @@
             background: #f5f7fa;
             color: #333;
         }
-        
-        /* Header with Ministry branding */
+
         .portal-header {
             background: #1a3e6f;
             color: white;
@@ -23,18 +23,17 @@
             display: flex;
             align-items: center;
         }
-        
+
         .ministry-logo {
             height: 50px;
             margin-right: 1.5rem;
         }
-        
+
         .header-title {
             font-size: 1.5rem;
             font-weight: 600;
         }
-        
-        /* User navigation bar */
+
         .user-bar {
             background: #14305a;
             padding: 0.5rem 2rem;
@@ -42,74 +41,168 @@
             justify-content: space-between;
             color: white;
         }
-        
-        /* Main portal grid */
+
         .portal-grid {
             display: grid;
             grid-template-columns: 250px 1fr;
             min-height: calc(100vh - 120px);
         }
-        
-        /* Side navigation */
+
         .side-nav {
             background: white;
             border-right: 1px solid #e0e0e0;
             padding: 1.5rem;
         }
-        
+
         .nav-item {
             margin-bottom: 1rem;
             padding: 0.5rem 0;
             border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        
-        /* Main content area */
+
+        .nav-item:hover {
+            color: #1a3e6f;
+            font-weight: 500;
+        }
+
         .content-area {
             padding: 2rem;
         }
-        
-        /* System cards */
-        .systems-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-panels {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
             margin-top: 2rem;
         }
-        
-        .system-card {
+
+        .news-section {
+            flex: 2;
+            min-width: 300px;
             background: white;
-            border-top: 4px solid #1a3e6f;
             border-radius: 4px;
             padding: 1.5rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
-        
-        .system-icon {
-            font-size: 2rem;
+
+        .news-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .news-date {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .news-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a3e6f;
+        }
+
+        .approval-section {
+            flex: 1;
+            min-width: 260px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+        }
+
+        .approval-section h2 {
+            font-size: 1.2rem;
             color: #1a3e6f;
             margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .approval-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .approval-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 1rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .approval-list li:last-child {
+            border-bottom: none;
+        }
+
+        .btn {
+            background: #1a3e6f;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #14305a;
+        }
+
+        .btn-logout {
+            background: #dc3545;
+        }
+
+        .badge {
+            background-color: #dc3545;
+            /* Bootstrap red */
+            color: white;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.85rem;
+            border-radius: 999px;
+            font-weight: bold;
+            min-width: 24px;
+            text-align: center;
+            display: inline-block;
+            margin-left: auto;
+            /* push badge to right */
         }
     </style>
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <!-- Ministry Header -->
     <header class="portal-header">
         <img src="mof-logo.png" alt="Ministry Logo" class="ministry-logo">
         <div class="header-title">Ministry of Finance - Employee Portal</div>
     </header>
-    
+
     <!-- User Bar -->
     <div class="user-bar">
-        <div>Welcome, <strong>John Doe</strong> (Budget Department)</div>
+        <div>Welcome, <strong>Fatematus Shaheba</strong> (IT Department)</div>
         <div>
-            <i class="fas fa-bell"></i>
-            <i class="fas fa-envelope"></i>
-            <button style="background: #dc3545; border: none; color: white; padding: 0.3rem 0.8rem; margin-left: 1rem;">Logout</button>
+            <i class="fas fa-bell" style="margin-right: 1rem; cursor: pointer;"></i>
+            <i class="fas fa-envelope" style="margin-right: 1rem; cursor: pointer;"></i>
+            <button class="btn btn-logout">Logout</button>
         </div>
     </div>
-    
+
     <!-- Main Portal Content -->
     <div class="portal-grid">
         <!-- Side Navigation -->
@@ -122,62 +215,105 @@
             <div class="nav-item"><i class="fas fa-car"></i> Car Booking</div>
             <div class="nav-item"><i class="fas fa-archive"></i> Document Storage</div>
         </aside>
-        
+
         <!-- Main Content -->
         <main class="content-area">
-            <h1>Ministry Systems Dashboard</h1>
-            <p>Access all integrated government systems through single sign-on</p>
-            
-            <div class="systems-grid">
-                <!-- Document Management -->
-                <div class="system-card">
-                    <div class="system-icon"><i class="fas fa-folder-open"></i></div>
-                    <h3>Document Management</h3>
-                    <p>Official document workflow system</p>
-                    <button style="background: #1a3e6f; color: white; border: none; padding: 0.5rem 1rem; margin-top: 1rem;">Access System</button>
+            <div class="dashboard-header">
+                <h1>Home</h1>
+                <p>Welcome to your employee portal</p>
+            </div>
+
+            <div class="dashboard-panels">
+                <!-- Internal Announcements -->
+                <div class="news-section">
+                    <h2><i class="fas fa-newspaper"></i> Internal Announcements</h2>
+
+                    <div class="news-item">
+                        <div class="news-date">July 15, 2025</div>
+                        <h3 class="news-title">New Document Management System Launch</h3>
+                        <p>The upgraded document workflow system will be available starting next Monday. All staff are
+                            required to complete the training module.</p>
+                    </div>
+
+                    <div class="news-item">
+                        <div class="news-date">July 10, 2025</div>
+                        <h3 class="news-title">Ministry Town Hall Meeting</h3>
+                        <p>All staff are invited to the quarterly town hall on July 25th at 2:00 PM in the main
+                            auditorium.</p>
+                    </div>
+
+                    <div class="news-item">
+                        <div class="news-date">July 5, 2025</div>
+                        <h3 class="news-title">New Parking Policy Effective August 1</h3>
+                        <p>Revised vehicle parking regulations have been approved. Click here to view the new parking
+                            map and assigned spaces.</p>
+                    </div>
+
+                    <div class="news-item">
+                        <div class="news-date">June 28, 2025</div>
+                        <h3 class="news-title">IT System Maintenance Notice</h3>
+                        <p>Scheduled maintenance this weekend (July 1–2) may cause brief service interruptions between
+                            10 PM and 2 AM.</p>
+                    </div>
+
+                    <button class="btn" style="margin-top: 1rem;">
+                        <i class="fas fa-book-open"></i> View News Archive
+                    </button>
                 </div>
-                
-                <!-- Leave Request -->
-                <div class="system-card">
-                    <div class="system-icon"><i class="fas fa-calendar-check"></i></div>
-                    <h3>Leave Request</h3>
-                    <p>Submit and track leave applications</p>
-                    <button style="background: #1a3e6f; color: white; border: none; padding: 0.5rem 1rem; margin-top: 1rem;">Access System</button>
+
+                <!-- Pending Approvals -->
+                <div class="approval-section">
+                    <h2><i class="fas fa-hourglass-half"></i> Pending Approvals</h2>
+                    <ul class="approval-list">
+                        <li>
+                            <span><i class="fas fa-calendar-alt"></i> Leave Request</span>
+                            <span class="badge">0</span>
+                        </li>
+                        <li>
+                            <span><i class="fas fa-ban"></i> Cancellation Request</span>
+                            <span class="badge">0</span>
+                        </li>
+                        <li>
+                            <span><i class="fas fa-door-open"></i> Meeting Room Booking</span>
+                            <span class="badge">0</span>
+                        </li>
+                        <li>
+                            <span><i class="fas fa-car"></i> Car Booking</span>
+                            <span class="badge">0</span>
+                        </li>
+                        <li>
+                            <span><i class="fas fa-clock"></i> Time Adjustment Request</span>
+                            <span class="badge">0</span>
+                        </li>
+                        <li>
+                            <span><i class="fas fa-money-bill-wave"></i> Overtime Reimbursement Request</span>
+                            <span class="badge">0</span>
+                        </li>
+                    </ul>
                 </div>
-                
-                <!-- Timekeeping -->
-                <div class="system-card">
-                    <div class="system-icon"><i class="fas fa-user-clock"></i></div>
-                    <h3>Timekeeping</h3>
-                    <p>Attendance and timesheet system</p>
-                    <button style="background: #1a3e6f; color: white; border: none; padding: 0.5rem 1rem; margin-top: 1rem;">Access System</button>
-                </div>
-                
-                <!-- Meeting Rooms -->
-                <div class="system-card">
-                    <div class="system-icon"><i class="fas fa-door-open"></i></div>
-                    <h3>Meeting Rooms</h3>
-                    <p>Book conference facilities</p>
-                    <button style="background: #1a3e6f; color: white; border: none; padding: 0.5rem 1rem; margin-top: 1rem;">Access System</button>
-                </div>
-                
-                <!-- Car Booking -->
-                <div class="system-card">
-                    <div class="system-icon"><i class="fas fa-car"></i></div>
-                    <h3>Car Booking</h3>
-                    <p>Official vehicle reservation</p>
-                    <button style="background: #1a3e6f; color: white; border: none; padding: 0.5rem 1rem; margin-top: 1rem;">Access System</button>
-                </div>
-                
-                <!-- Document Storage -->
-                <div class="system-card">
-                    <div class="system-icon"><i class="fas fa-archive"></i></div>
-                    <h3>Document Storage</h3>
-                    <p>Secure government document repository</p>
-                    <button style="background: #1a3e6f; color: white; border: none; padding: 0.5rem 1rem; margin-top: 1rem;">Access System</button>
-                </div>
+
             </div>
         </main>
     </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Logout functionality
+        document.querySelector('.btn-logout').addEventListener('click', function () {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('mof_authenticated');
+                localStorage.removeItem('mof_userEmail');
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Navigation click events
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function () {
+                alert('System access would open here in production');
+            });
+        });
+    </script>
 </body>
+
 </html>
