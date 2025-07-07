@@ -1,32 +1,51 @@
 const express = require('express');
+const session = require('express-session');
+const bodyParser = require('body-parser');
 const path = require('path');
+
 const app = express();
+const PORT = 3000;
 
-// Middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(session({
+    secret: 'mof_sso_secret',
+    resave: false,
 
-// Serve static files from public folder
+}))
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve index.html on root
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-// Login route (this will be connected to MySQL later)
+// Login endpoint
 app.post('/login', (req, res) => {
-  const { email, password } = req.body;
+    const {email, password} = req.body;
 
-  if (email.endsWith('@mofth.omnicrosoft.com') && password.length >= 8) {
-    res.status(200).json({ success: true });
-  } else {
-    res.status(401).json({ success: false, message: 'Invalid credentials' });
-  }
+    if (email.endswith('@mofth.omnicrosoft.com') && password.length >= 8) {
+        req.session.authenticated = true;
+        req.session.user = email;
+        return res.status(200).json({success: true});
+
+    } else {
+        return res.status(401).json({sucess: false, message: 'Invalid credentials'});
+    }
 });
 
-// Start the server
-const PORT = process.env.PORT || 3000;
+// Portal protection
+app.get('/logout', (req, res, next) => {
+    if (req.session.authenticated) {
+        return next(); 
+    }
+    return res.redirect('index.html');
+})
+
+// Logout
+app.get('/logout', (req, res) => {
+    req.session.destroy(() => {
+        res.redirect('/index.html');
+    });
+});
+
+// Start server
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+    console.log('Server running at http://localhost:${PORT}');
 });
