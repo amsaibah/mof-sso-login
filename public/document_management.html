@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ministry of Finance - Document Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base styles matching your portal */
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .portal-header {
+            background: #1a3e6f;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-bottom: 4px solid #b38b00;
+            display: flex;
+            align-items: center;
+        }
+
+        .ministry-logo {
+            height: 50px;
+            margin-right: 1.5rem;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .user-bar {
+            background: #14305a;
+            padding: 0.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+        }
+
+        .portal-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: calc(100vh - 120px);
+        }
+
+        .side-nav {
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 1.5rem;
+        }
+
+        .nav-item {
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            color: #1a3e6f;
+            font-weight: 500;
+        }
+
+        .nav-item.active {
+            color: #1a3e6f;
+            font-weight: 600;
+        }
+
+        /* Document Management Specific Styles */
+        .document-container {
+            padding: 2rem;
+            background: #f5f7fa;
+        }
+
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .document-title {
+            font-size: 1.8rem;
+            color: #1a3e6f;
+            font-weight: 600;
+        }
+
+        .document-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            min-width: 150px;
+        }
+
+        .search-box {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 250px;
+        }
+
+        .search-btn {
+            padding: 8px 15px;
+            background: #1a3e6f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .new-doc-btn {
+            padding: 10px 15px;
+            background: #1a3e6f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .documents-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .documents-table th {
+            background: #f0f4f8;
+            padding: 12px 15px;
+            text-align: left;
+            color: #1a3e6f;
+            font-weight: 600;
+        }
+
+        .documents-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .documents-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-draft {
+            background: #ffeb3b;
+            color: #000;
+        }
+
+        .status-pending {
+            background: #ff9800;
+            color: white;
+        }
+
+        .status-approved {
+            background: #4caf50;
+            color: white;
+        }
+
+        .status-rejected {
+            background: #f44336;
+            color: white;
+        }
+
+        .action-btn {
+            padding: 6px 10px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .view-btn {
+            background: #2196f3;
+            color: white;
+        }
+
+        .edit-btn {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .delete-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 25px;
+            border-radius: 8px;
+            width: 50%;
+            max-width: 600px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: #1a3e6f;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #444;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            border-color: #1a3e6f;
+            outline: none;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-primary {
+            background: #1a3e6f;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Ministry Header -->
+    <header class="portal-header">
+        <img src="mof-logo.png" alt="Ministry Logo" class="ministry-logo">
+        <div class="header-title">Ministry of Finance - Employee Portal</div>
+    </header>
+
+    <!-- User Bar -->
+    <div class="user-bar">
+        <div>Welcome, <strong>Fatematus Shaheba</strong> (IT Department)</div>
+        <div>
+            <button class="btn-logout">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Portal Content -->
+    <div class="portal-grid">
+        <!-- Side Navigation -->
+        <aside class="side-nav">
+            <h3>SSO Systems</h3>
+            <div class="nav-item active"><i class="fas fa-folder"></i> Document Management</div>
+            <div class="nav-item"><i class="fas fa-calendar-alt"></i> Leave Request</div>
+            <div class="nav-item"><i class="fas fa-clock"></i> Timekeeping</div>
+            <div class="nav-item"><i class="fas fa-door-open"></i> Meeting Rooms</div>
+            <div class="nav-item"><i class="fas fa-car"></i> Car Booking</div>
+            <div class="nav-item"><i class="fas fa-archive"></i> Document Storage</div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content-area">
+            <div class="document-container">
+                <div class="document-header">
+                    <h1 class="document-title">Document Management</h1>
+                    <button class="new-doc-btn" id="new-document-btn">
+                        <i class="fas fa-plus"></i> New Document
+                    </button>
+                </div>
+
+                <div class="document-filters">
+                    <select class="filter-select" id="document-type">
+                        <option value="all">All Types</option>
+                        <option value="policy">Policy</option>
+                        <option value="report">Report</option>
+                        <option value="memo">Memo</option>
+                        <option value="form">Form</option>
+                    </select>
+                    
+                    <select class="filter-select" id="document-status">
+                        <option value="all">All Statuses</option>
+                        <option value="draft">Draft</option>
+                        <option value="pending">Pending Approval</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                    
+                    <input type="text" class="search-box" id="document-search" placeholder="Search documents...">
+                    <button class="search-btn" id="search-btn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+
+                <table class="documents-table">
+                    <thead>
+                        <tr>
+                            <th>Document ID</th>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Last Modified</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="documents-table-body">
+                        <!-- Sample data - will be populated by JavaScript -->
+                        <tr>
+                            <td>MOF-DOC-2023-001</td>
+                            <td>IT Security Policy</td>
+                            <td>Policy</td>
+                            <td><span class="status-badge status-approved">Approved</span></td>
+                            <td>2023-06-15</td>
+                            <td>
+                                <button class="action-btn view-btn">View</button>
+                                <button class="action-btn edit-btn">Edit</button>
+                                <button class="action-btn delete-btn">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>MOF-DOC-2023-002</td>
+                            <td>Quarterly Financial Report</td>
+                            <td>Report</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td>2023-07-10</td>
+                            <td>
+                                <button class="action-btn view-btn">View</button>
+                                <button class="action-btn edit-btn">Edit</button>
+                                <button class="action-btn delete-btn">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>MOF-DOC-2023-003</td>
+                            <td>Staff Meeting Minutes</td>
+                            <td>Memo</td>
+                            <td><span class="status-badge status-draft">Draft</span></td>
+                            <td>2023-07-18</td>
+                            <td>
+                                <button class="action-btn view-btn">View</button>
+                                <button class="action-btn edit-btn">Edit</button>
+                                <button class="action-btn delete-btn">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>MOF-DOC-2023-004</td>
+                            <td>Travel Expense Form</td>
+                            <td>Form</td>
+                            <td><span class="status-badge status-approved">Approved</span></td>
+                            <td>2023-05-22</td>
+                            <td>
+                                <button class="action-btn view-btn">View</button>
+                                <button class="action-btn edit-btn">Edit</button>
+                                <button class="action-btn delete-btn">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- New Document Modal -->
+    <div id="document-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create New Document</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="document-form">
+                <input type="hidden" id="doc-id">
+                <div class="form-group">
+                    <label for="doc-title" class="form-label">Document Title*</label>
+                    <input type="text" id="doc-title" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="doc-type" class="form-label">Document Type*</label>
+                    <select id="doc-type" class="form-control" required>
+                        <option value="policy">Policy</option>
+                        <
