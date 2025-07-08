@@ -1,4 +1,4 @@
-document.getElementById('loginForm').addEventListener('submit', async function(e) {
+document.getElementById('loginForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
     const email = document.getElementById('email').value;
@@ -14,17 +14,20 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         return;
     }
 
-    const res = await fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-    });
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
 
-    const data = await res.json();
-
-    if (data.success) {
-        window.location.href = '/portal.html';
-    } else {
-        alert('Login failed: ' + data.message);
+        const data = await response.json();
+        if (data.success) {
+            window.location.href = 'portal.html';
+        } else {
+            alert(data.message || 'Login failed');
+        }
+    } catch (error) {
+        alert('Error during login');
     }
 });
