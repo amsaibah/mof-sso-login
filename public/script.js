@@ -1,4 +1,4 @@
-document.getElementById('loginForm').addEventListener('submit', async function (e) {
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
     const email = document.getElementById('email').value;
@@ -22,12 +22,15 @@ document.getElementById('loginForm').addEventListener('submit', async function (
         });
 
         const data = await response.json();
+
         if (data.success) {
-            window.location.href = 'portal.html';
+            window.location.href = '/portal.html';
         } else {
-            alert(data.message || 'Login failed');
+            alert('Login failed: ' + data.message);
         }
     } catch (error) {
-        alert('Error during login');
+        console.error('Login error:', error);
+        alert('Server error. Try again later.');
     }
 });
+
