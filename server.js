@@ -1,56 +1,52 @@
 const express = require('express');
-const path = require('path');
 const session = require('express-session');
+const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
 const PORT = 3000;
 
 // Middleware
-app.use(express.static(path.join(__dirname)));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(session({
-    secret: 'mof-secret-key',
-    resave: false,
-    saveUninitialized: true,
+  secret: 'mof_sso_secret',
+  resave: false,
+  saveUninitialized: true
 }));
 
-// Dummy credentials
-const dummyUser = {
-    email: 'user@mofth.omnicrosoft.com',
-    password: 'securepass123',
-    name: 'Fatematus Shaheba',
-    department: 'IT Department'
-};
+// Serve static files from /public
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Login route
+// Login endpoint
 app.post('/login', (req, res) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    if (email === dummyUser.email && password === dummyUser.password) {
-        req.session.user = dummyUser;
-        return res.json({ success: true });
-    } else {
-        return res.json({ success: false, message: 'Invalid credentials' });
-    }
+  if (email === user.email && password === user.password) {
+    req.session.authenticated = true;
+    req.session.user = email;
+    return res.status(200).json({ success: true });
+  } else {
+    return res.status(401).json({ success: false, message: 'Invalid credentials' });
+  }
 });
 
-// Authenticated route
+// Portal protection
 app.get('/portal.html', (req, res, next) => {
-    if (!req.session.user) {
-        return res.redirect('/index.html');
-    }
-    next();
+  if (req.session.authenticated) {
+    return next(); // Continue to portal
+  }
+  return res.redirect('/index.html');
 });
 
-// Logout route
+// Logout
 app.get('/logout', (req, res) => {
-    req.session.destroy(() => {
-        res.redirect('/index.html');
-    });
+  req.session.destroy(() => {
+    res.redirect('/index.html');
+  });
 });
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
