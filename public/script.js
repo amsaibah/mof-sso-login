@@ -4,8 +4,8 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    if (!email.endsWith('@mofth.omnicrosoft.com')) {
-        alert('Please use your @mofth.omnicrosoft.com email address');
+    if (!email.endsWith('@mofth.onmicrosoft.com')) {
+        alert('Please use your @mofth.onmicrosoft.com email address');
         return;
     }
 
