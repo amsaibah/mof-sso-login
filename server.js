@@ -131,5 +131,47 @@ app.get('/documents', (req, res) => {
     });
 });
 
+app.post('/update-status', async (req, res) => {
+    const { id, status } = req.body;
+
+    if (!id || !status) {
+        return res.status(400).json({ success: false, message: 'Missing data' });
+    }
+
+    try {
+        const [result] = await db.execute(
+            'UPDATE documents SET status = ?, updated_at = NOW() WHERE id = ?',
+            [status, id]
+        );
+
+        if (result.affectedRows === 1) {
+            res.json({ success: true });
+        } else {
+            res.json({ success: false, message: 'Document not found' });
+        }
+    } catch (error) {
+        console.error('Error updating status:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+app.put('/update-status/:id', async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    try {
+        await pool.query(
+            'UPDATE documents SET status = ?, updated_at = NOW() WHERE id = ?',
+            [status, id]
+        );
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Error updating status:', err);
+        res.status(500).json({ success: false, message: 'Database error' });
+    }
+});
+
+
+
 
 
