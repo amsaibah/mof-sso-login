@@ -1,6 +1,6 @@
-document.getElementById('loginForm').addEventListener('submit', async function(e) {
+// Login Form Handler (existing code)
+document.getElementById('loginForm')?.addEventListener('submit', async function(e) {
     e.preventDefault();
-
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
@@ -20,9 +20,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
         });
-
         const data = await response.json();
-
         if (data.success) {
             window.location.href = '/portal.html';
         } else {
@@ -31,6 +29,85 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     } catch (error) {
         console.error('Login error:', error);
         alert('Server error. Try again later.');
+    }
+});
+
+
+async function loadDocuments() {
+    try {
+        const res = await fetch('/documents');
+        const documents = await res.json();
+
+        const tbody = document.getElementById('documents-table-body');
+        tbody.innerHTML = ''; // Clear existing rows
+
+        documents.forEach(doc => {
+            const row = document.createElement('tr');
+
+            row.innerHTML = `
+                <td>MOF-DOC-${String(doc.id).padStart(4, '0')}</td>
+                <td>${doc.title}</td>
+                <td>${doc.type}</td>
+                <td><span class="status-badge status-${doc.status}">${capitalize(doc.status)}</span></td>
+                <td>${new Date(doc.updated_at).toLocaleDateString()}</td>
+                <td>
+                    <a class="action-btn view-btn" href="${doc.file_path}" target="_blank">View</a>
+                    <button class="action-btn delete-btn" onclick="deleteDocument(${doc.id})">Delete</button>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error loading documents:', error);
+    }
+}
+
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+window.addEventListener('DOMContentLoaded', loadDocuments);
+
+// Open modal
+document.getElementById('new-document-btn').addEventListener('click', () => {
+    document.getElementById('document-modal').style.display = 'block';
+});
+
+// Close modal
+document.querySelectorAll('.close-modal').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.getElementById('document-modal').style.display = 'none';
+        document.getElementById('document-form').reset();
+    });
+});
+
+// Form submit handler
+document.getElementById('document-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const form = document.getElementById('document-form');
+    const formData = new FormData(form);
+
+    try {
+        const response = await fetch('/upload-document', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert('Document uploaded successfully');
+            document.getElementById('document-modal').style.display = 'none';
+            form.reset();
+            loadDocuments(); // refresh table
+        } else {
+            alert('Upload failed: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Upload error:', error);
+        alert('Error uploading document');
     }
 });
 
