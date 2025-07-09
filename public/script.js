@@ -1,5 +1,5 @@
-// Login Form Handler
-document.getElementById('loginForm')?.addEventListener('submit', async function(e) {
+// Login Form Handler (existing code)
+document.getElementById('loginForm')?.addEventListener('submit', async function (e) {
     e.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -48,14 +48,7 @@ async function loadDocuments() {
                 <td>MOF-DOC-${String(doc.id).padStart(4, '0')}</td>
                 <td>${doc.title}</td>
                 <td>${doc.type}</td>
-                <td>
-                    <select class="status-select" onchange="updateStatus(${doc.id}, this.value)">
-                        <option value="draft" ${doc.status === 'draft' ? 'selected' : ''}>Draft</option>
-                        <option value="pending" ${doc.status === 'pending' ? 'selected' : ''}>Pending Approval</option>
-                        <option value="approved" ${doc.status === 'approved' ? 'selected' : ''}>Approved</option>
-                        <option value="rejected" ${doc.status === 'rejected' ? 'selected' : ''}>Rejected</option>
-                    </select>
-                </td>
+                <td><span class="status-badge status-${doc.status}">${capitalize(doc.status)}</span></td>
                 <td>${new Date(doc.updated_at).toLocaleDateString()}</td>
                 <td>
                     <a class="action-btn view-btn" href="${doc.file_path}" target="_blank">View</a>
@@ -70,34 +63,9 @@ async function loadDocuments() {
     }
 }
 
-// Helper to capitalize first letter
+// Capitalize first letter helper
 function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-// Handle status update
-async function updateStatus(documentId, newStatus) {
-    try {
-        const response = await fetch('/update-status', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id: documentId, status: newStatus })
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            alert('Status updated successfully');
-            loadDocuments(); // refresh table
-        } else {
-            alert('Failed to update status: ' + result.message);
-        }
-    } catch (error) {
-        console.error('Status update error:', error);
-        alert('Server error while updating status');
-    }
 }
 
 // Load documents on page load
@@ -116,8 +84,8 @@ document.querySelectorAll('.close-modal').forEach(btn => {
     });
 });
 
-// Handle new document upload
-document.getElementById('document-form').addEventListener('submit', async function(e) {
+// Form submit handler for new document
+document.getElementById('document-form').addEventListener('submit', async function (e) {
     e.preventDefault();
 
     const form = document.getElementById('document-form');
