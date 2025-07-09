@@ -155,22 +155,6 @@ app.post('/update-status', async (req, res) => {
     }
 });
 
-app.put('/update-status/:id', async (req, res) => {
-    const { id } = req.params;
-    const { status } = req.body;
-
-    try {
-        await pool.query(
-            'UPDATE documents SET status = ?, updated_at = NOW() WHERE id = ?',
-            [status, id]
-        );
-        res.json({ success: true });
-    } catch (err) {
-        console.error('Error updating status:', err);
-        res.status(500).json({ success: false, message: 'Database error' });
-    }
-});
-
 
 
 
