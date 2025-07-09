@@ -80,3 +80,56 @@ app.get('/logout', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
+
+const multer = require('multer');
+const uploadFolder = path.join(__dirname, 'public/uploads');
+const fs = require('fs');
+
+// Ensure upload folder exists
+if (!fs.existsSync(uploadFolder)) fs.mkdirSync(uploadFolder, { recursive: true });
+
+// Multer config
+const storage = multer.diskStorage({
+    destination: uploadFolder,
+    filename: (req, file, cb) => {
+        const timestamp = Date.now();
+        const ext = path.extname(file.originalname);
+        const filename = `${file.fieldname}-${timestamp}${ext}`;
+        cb(null, filename);
+    }
+});
+const upload = multer({ storage });
+
+// Upload route
+app.post('/upload-document', upload.single('document'), (req, res) => {
+    const { title, type, description } = req.body;
+    const filePath = `/uploads/${req.file.filename}`;
+    const createdBy = req.session.user?.email || 'system';
+
+    const sql = `
+        INSERT INTO documents (title, type, status, description, file_path, created_by, created_at, updated_at)
+        VALUES (?, ?, 'draft', ?, ?, ?, NOW(), NOW())
+    `;
+    const values = [title, type, description, filePath, createdBy];
+
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Upload DB error:', err);
+            return res.status(500).json({ success: false, message: 'Upload failed' });
+        }
+        res.json({ success: true, message: 'Document uploaded successfully' });
+    });
+});
+
+app.get('/documents', (req, res) => {
+    db.query('SELECT * FROM documents ORDER BY created_at DESC', (err, results) => {
+        if (err) {
+            console.error('Fetch error:', err);
+            return res.status(500).json({ success: false, message: 'Failed to load documents' });
+        }
+        res.json(results);
+    });
+});
+
+
+
