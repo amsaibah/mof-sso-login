@@ -7,7 +7,6 @@
     <title>Ministry of Finance - Document Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Base styles matching your portal */
         body {
             font-family: 'Segoe UI', Tahoma, sans-serif;
             margin: 0;
@@ -73,8 +72,6 @@
             font-weight: 600;
         }
 
-
-        /* Document Management Specific Styles */
         .document-container {
             padding: 2rem;
             background: #f5f7fa;
@@ -209,10 +206,8 @@
 
         .action-btn:hover {
             background-color: #14305a;
-            /* a darker shade of blue on hover */
         }
 
-        /* Optional: remove individual colors */
         .view-btn,
         .edit-btn,
         .delete-btn {
@@ -221,9 +216,6 @@
             border: none;
         }
 
-
-
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -323,6 +315,43 @@
             color: white;
             border: none;
         }
+
+        .btn-back {
+            padding: 8px 15px;
+            background: #1a3e6f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 10px;
+        }
+
+        .btn-back:hover {
+            background: #14305a;
+        }
+
+        .user-bar>div:last-child {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-logout {
+            padding: 8px 15px;
+            background: #dc3545;
+            /* Red color for logout */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            background: #c82333;
+        }
     </style>
 </head>
 
@@ -333,10 +362,12 @@
         <div class="header-title">Ministry of Finance - Employee Portal</div>
     </header>
 
-    <!-- User Bar -->
     <div class="user-bar">
         <div>Welcome, <strong>Fatematus Shaheba</strong> (IT Department)</div>
-        <div>
+        <div style="display: flex; align-items: center;">
+            <button class="btn-back" onclick="window.location.href='portal.html'">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </button>
             <button class="btn-logout">Logout</button>
         </div>
     </div>
