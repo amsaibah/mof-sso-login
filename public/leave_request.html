@@ -119,12 +119,13 @@
                             <option value="personal">Personal leave</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
-                        <label for="partDays" class="form-label required-field">Has part days</label>
-                        <select class="form-select" id="partDays" required>
-                            <option value="no">No</option>
-                            <option value="yes">Part days</option>
-                        </select>
+                    <div class="col-md-3">
+                        <label for="fromDate" class="form-label required-field">From</label>
+                        <input type="date" class="form-control" id="fromDate" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="toDate" class="form-label required-field">To</label>
+                        <input type="date" class="form-control" id="toDate" required>
                     </div>
                 </div>
             </div>
@@ -151,4 +152,5 @@
     <script src="script.js"></script>
 
 </body>
+
 </html>
