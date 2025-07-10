@@ -3,6 +3,10 @@ const path = require('path');
 const session = require('express-session');
 const mysql = require('mysql2');
 
+const multer = require('multer');
+const uploadFolder = path.join(__dirname, 'public/uploads');
+const fs = require('fs');
+
 const app = express();
 const PORT = 3000;
 
@@ -81,10 +85,6 @@ app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
 
-const multer = require('multer');
-const uploadFolder = path.join(__dirname, 'public/uploads');
-const fs = require('fs');
-
 // Ensure upload folder exists
 if (!fs.existsSync(uploadFolder)) fs.mkdirSync(uploadFolder, { recursive: true });
 
@@ -153,6 +153,24 @@ app.post('/update-status', async (req, res) => {
         console.error('Error updating status:', error);
         res.status(500).json({ success: false, message: 'Server error' });
     }
+});
+
+// delete route
+app.delete('/documents/:id', (req, res) => {
+    const documentId = req.params.id;
+    
+    db.query('DELETE FROM documents WHERE id = ?', [documentId], (err, result) => {
+        if (err) {
+            console.error('Delete error:', err);
+            return res.status(500).json({ success: false, message: 'Delete failed' });
+        }
+        
+        if (result.affectedRows === 0) {
+            return res.json({ success: false, message: 'Document not found' });
+        }
+        
+        res.json({ success: true, message: 'Document deleted successfully' });
+    });
 });
 
 
