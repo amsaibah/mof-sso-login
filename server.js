@@ -172,3 +172,47 @@ app.delete('/documents/:id', (req, res) => {
         res.json({ success: true, message: 'Document deleted successfully' });
     });
 });
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+//route to leave_request.html
+app.get('/leave_request.html', (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/index.html');
+    }
+    res.sendFile(path.join(__dirname, 'public', 'leave_request.html'));
+});
+
+// Leave Request Endpoints
+app.post('/submit-leave', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ success: false, message: 'Not logged in' });
+    }
+
+    const { leaveType, partDays, message } = req.body;
+    const employeeEmail = req.session.user.email;
+
+    const sql = `
+        INSERT INTO leave_requests 
+        (employee_email, leave_type, part_days, message, status, created_at)
+        VALUES (?, ?, ?, ?, 'pending', NOW())
+    `;
+    
+    db.query(sql, [employeeEmail, leaveType, partDays, message], (err, result) => {
+        if (err) {
+            console.error('Leave submission error:', err);
+            return res.status(500).json({ success: false, message: 'Leave submission failed' });
+        }
+        res.json({ success: true, message: 'Leave request submitted successfully' });
+    });
+});
+
+app.get('/user-info', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not logged in' });
+    }
+    res.json({
+        email: req.session.user.email,
+        name: req.session.user.name || req.session.user.email.split('@')[0]
+    });
+});
