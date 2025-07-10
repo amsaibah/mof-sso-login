@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ministry of Finance - Leave Request</title>
-    <!-- Bootstrap CSS -->
+    <title>Ministry of Finance - New Leave Request</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -18,18 +16,16 @@
         body {
             font-family: 'Segoe UI', Tahoma, sans-serif;
             background-color: var(--mof-light-bg);
-            padding-bottom: 2rem;
         }
         
         .portal-header {
             background-color: var(--mof-blue);
             color: white;
             padding: 1.2rem 2.5rem;
-            margin-bottom: 1.5rem;
         }
         
-        .form-card {
-            background: white;
+        .form-section {
+            background-color: white;
             border-radius: 8px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
@@ -41,27 +37,16 @@
             border-bottom: 1px solid #eee;
             padding-bottom: 0.5rem;
             margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-            font-weight: 600;
         }
         
-        .btn-primary {
+        .btn-mof {
             background-color: var(--mof-blue);
-            border-color: var(--mof-blue);
+            color: white;
+            border: none;
         }
         
-        .btn-primary:hover {
+        .btn-mof:hover {
             background-color: var(--mof-dark-blue);
-            border-color: var(--mof-dark-blue);
-        }
-        
-        .btn-outline-primary {
-            color: var(--mof-blue);
-            border-color: var(--mof-blue);
-        }
-        
-        .btn-outline-primary:hover {
-            background-color: var(--mof-blue);
             color: white;
         }
         
@@ -71,119 +56,137 @@
         }
         
         .breadcrumb {
-            background: transparent;
-            padding: 0.5rem 0;
-            font-size: 0.9rem;
+            background-color: transparent;
+            padding: 0.75rem 0;
         }
         
         .breadcrumb-item.active {
             color: var(--mof-blue);
-            font-weight: 500;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
-    <!-- Header (Same as your other pages) -->
-    <header class="portal-header">
-        <div class="container">
+    <!-- Header (Same as portal.html) -->
+    <header class="portal-header mb-4">
+        <div class="container-fluid">
             <div class="d-flex align-items-center">
-                <img src="mof-logo.png" alt="Ministry Logo" height="60" class="me-3">
-                <h1 class="h5 mb-0">Ministry of Finance - Employee Portal</h1>
+                <img src="mof-logo.png" alt="Ministry Logo" height="70" class="me-3">
+                <h1 class="h4 mb-0">Ministry of Finance - Employee Portal</h1>
             </div>
         </div>
     </header>
 
-    <main class="container">
-        <!-- Breadcrumb Navigation -->
+    <main class="container-fluid">
+        <!-- Breadcrumb -->
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
-                <li class="breadcrumb-item">Leave</li>
-                <li class="breadcrumb-item">Leave pending</li>
-                <li class="breadcrumb-item active">New leave request</li>
+                <li class="breadcrumb-item"><a href="portal.html"><i class="fas fa-home"></i> Home</a></li>
+                <li class="breadcrumb-item">Leave Request</li>
+                <li class="breadcrumb-item active">New Leave Request</li>
             </ol>
         </nav>
 
         <!-- Page Title -->
         <h2 class="h4 mb-4">New Leave Request</h2>
 
-        <!-- Employee Information -->
-        <div class="form-card">
-            <h5 class="form-title">Employee Information</h5>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label required-field">Employee</label>
-                    <input type="text" class="form-control" value="Mark Ogilvie" readonly>
+        <form id="leaveRequestForm">
+            <!-- Employee Info (Auto-filled) -->
+            <div class="form-section">
+                <h5 class="form-title">Employee Information</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label required-field">Employee</label>
+                        <input type="text" class="form-control" id="employeeName" readonly>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Leave Details -->
-        <div class="form-card">
-            <h5 class="form-title">Leave Details</h5>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label required-field">Leave type</label>
-                    <select class="form-select" required>
-                        <option value="">Select leave type</option>
-                        <option selected>Annual leave</option>
-                        <option>Sick leave</option>
-                        <option>Personal leave</option>
-                    </select>
+            <!-- Leave Details -->
+            <div class="form-section">
+                <h5 class="form-title">Leave Details</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="leaveType" class="form-label required-field">Leave type</label>
+                        <select class="form-select" id="leaveType" required>
+                            <option value="" disabled selected>Select leave type</option>
+                            <option value="annual">Annual leave</option>
+                            <option value="sick">Sick leave</option>
+                            <option value="personal">Personal leave</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="partDays" class="form-label required-field">Has part days</label>
+                        <select class="form-select" id="partDays" required>
+                            <option value="no">No</option>
+                            <option value="yes">Part days</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label required-field">Has part days</label>
-                    <select class="form-select" required>
-                        <option>No</option>
-                        <option selected>Part days</option>
-                    </select>
+            </div>
+
+            <!-- Message -->
+            <div class="form-section">
+                <h5 class="form-title">Message</h5>
+                <div class="mb-3">
+                    <label for="message" class="form-label required-field">Message</label>
+                    <textarea class="form-control" id="message" rows="3" placeholder="Enter any messages here" required></textarea>
                 </div>
             </div>
-        </div>
 
-        <!-- Message -->
-        <div class="form-card">
-            <h5 class="form-title">Message</h5>
-            <div class="mb-3">
-                <label class="form-label required-field">Message</label>
-                <textarea class="form-control" rows="3" placeholder="Enter any messages here"></textarea>
+            <!-- Form Actions -->
+            <div class="d-flex justify-content-end gap-2 mb-4">
+                <button type="button" class="btn btn-outline-secondary" onclick="window.location.href='portal.html'">Cancel</button>
+                <button type="submit" class="btn btn-mof">Submit Request</button>
             </div>
-        </div>
-
-        <!-- Leave Periods -->
-        <div class="form-card">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="form-title mb-0">Leave periods</h5>
-                <button class="btn btn-sm btn-primary">
-                    <i class="fas fa-plus me-1"></i> Add leave period
-                </button>
-            </div>
-            
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Leave date</th>
-                            <th>Number of hours</th>
-                            <th width="100">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Rows will be added here dynamically -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Form Buttons -->
-        <div class="d-flex justify-content-end gap-2 mt-4">
-            <button type="button" class="btn btn-outline-secondary">Cancel</button>
-            <button type="button" class="btn btn-outline-primary">Pay in advance</button>
-            <button type="submit" class="btn btn-primary">Submit Request</button>
-        </div>
+        </form>
     </main>
 
-    <!-- Bootstrap JS -->
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Get user info
+            try {
+                const response = await fetch('/user-info');
+                if (response.ok) {
+                    const user = await response.json();
+                    document.getElementById('employeeName').value = user.name || user.email.split('@')[0];
+                }
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+
+            // Form submission
+            document.getElementById('leaveRequestForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const leaveType = document.getElementById('leaveType').value;
+                const partDays = document.getElementById('partDays').value;
+                const message = document.getElementById('message').value;
+
+                try {
+                    const response = await fetch('/submit-leave', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ leaveType, partDays, message })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        alert('Leave request submitted successfully!');
+                        window.location.href = 'portal.html';
+                    } else {
+                        alert('Submission failed: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Submission error:', error);
+                    alert('Error submitting leave request');
+                }
+            });
+        });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
