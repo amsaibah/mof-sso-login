@@ -45,17 +45,16 @@ async function loadDocuments() {
             const row = document.createElement('tr');
 
             row.innerHTML = `
-                <td>MOF-DOC-${String(doc.id).padStart(4, '0')}</td>
-                <td>${doc.title}</td>
-                <td>${doc.type}</td>
-                <td><span class="status-badge status-${doc.status}">${capitalize(doc.status)}</span></td>
-                <td>${new Date(doc.updated_at).toLocaleDateString()}</td>
-                <td>
-                    <a class="action-btn view-btn" href="${doc.file_path}" target="_blank">View</a>
-                    <button class="action-btn delete-btn" onclick="deleteDocument(${doc.id})">Delete</button>
-                </td>
+            <td>MOF-DOC-${String(doc.id).padStart(4, '0')}</td>
+            <td>${doc.title}</td>
+            <td>${doc.type}</td>
+            <td><span class="status-badge status-${doc.status}">${capitalize(doc.status)}</span></td>
+            <td>${new Date(doc.updated_at).toLocaleDateString()}</td>
+            <td>
+            <a class="action-btn view-btn" href="${doc.file_path}" target="_blank">View</a>
+            <button class="action-btn delete-btn" onclick="deleteDocument(${doc.id})">Delete</button>
+            </td>
             `;
-
             tbody.appendChild(row);
         });
     } catch (error) {
@@ -112,3 +111,28 @@ document.getElementById('document-form').addEventListener('submit', async functi
         alert('Error uploading document');
     }
 });
+
+//delete function 
+async function deleteDocument(id) {
+    if (!confirm('Are you sure you want to delete this document?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/documents/${id}`, {
+            method: 'DELETE'
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert('Document deleted successfully');
+            loadDocuments(); // Refresh the table
+        } else {
+            alert('Delete failed: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Delete error:', error);
+        alert('Error deleting document');
+    }
+}
