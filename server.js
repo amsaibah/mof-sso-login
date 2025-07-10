@@ -172,8 +172,3 @@ app.delete('/documents/:id', (req, res) => {
         res.json({ success: true, message: 'Document deleted successfully' });
     });
 });
-
-
-
-
-
