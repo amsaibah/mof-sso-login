@@ -224,3 +224,106 @@ app.get('/user-info', (req, res) => {
         name: req.session.user.name || req.session.user.email.split('@')[0]
     });
 });
+
+// Meeting Room Endpoints
+app.get('/meeting-rooms', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not logged in' });
+    }
+
+    db.query('SELECT * FROM meeting_rooms', (err, rooms) => {
+        if (err) {
+            console.error('Error fetching rooms:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json(rooms);
+    });
+});
+
+app.get('/room-availability/:roomId', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not logged in' });
+    }
+
+    const { roomId } = req.params;
+    const { date } = req.query;
+
+    if (!date) {
+        return res.status(400).json({ error: 'Date parameter is required' });
+    }
+
+    const sql = `
+        SELECT start_time, end_time 
+        FROM room_bookings 
+        WHERE room_id = ? 
+        AND booking_date = ? 
+        AND status = 'approved'
+    `;
+    
+    db.query(sql, [roomId, date], (err, bookings) => {
+        if (err) {
+            console.error('Error fetching bookings:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json(bookings);
+    });
+});
+
+app.post('/book-room', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not logged in' });
+    }
+
+    const { roomId, bookingDate, startTime, endTime } = req.body;
+    const userEmail = req.session.user.email;
+
+    // Validate time slot (30 minutes minimum)
+    const start = new Date(`2000-01-01T${startTime}`);
+    const end = new Date(`2000-01-01T${endTime}`);
+    const duration = (end - start) / (1000 * 60); // in minutes
+    
+    if (duration < 30) {
+        return res.status(400).json({ error: 'Minimum booking duration is 30 minutes' });
+    }
+
+    // Check for existing bookings
+    const checkSql = `
+        SELECT id 
+        FROM room_bookings 
+        WHERE room_id = ? 
+        AND booking_date = ? 
+        AND (
+            (start_time < ? AND end_time > ?) OR
+            (start_time >= ? AND start_time < ?) OR
+            (end_time > ? AND end_time <= ?)
+        )
+        AND status != 'rejected'
+    `;
+    
+    db.query(checkSql, [roomId, bookingDate, endTime, startTime, startTime, endTime, startTime, endTime], 
+        (err, conflicts) => {
+            if (err) {
+                console.error('Error checking conflicts:', err);
+                return res.status(500).json({ error: 'Database error' });
+            }
+            
+            if (conflicts.length > 0) {
+                return res.status(409).json({ error: 'Time slot already booked' });
+            }
+
+            // Insert new booking
+            const insertSql = `
+                INSERT INTO room_bookings 
+                (room_id, user_email, booking_date, start_time, end_time, status)
+                VALUES (?, ?, ?, ?, ?, 'pending')
+            `;
+            
+            db.query(insertSql, [roomId, userEmail, bookingDate, startTime, endTime], (err, result) => {
+                if (err) {
+                    console.error('Error creating booking:', err);
+                    return res.status(500).json({ error: 'Database error' });
+                }
+                res.json({ success: true, bookingId: result.insertId });
+            });
+        });
+});
