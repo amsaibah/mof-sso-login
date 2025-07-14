@@ -327,3 +327,25 @@ app.post('/book-room', (req, res) => {
             });
         });
 });
+
+app.get('/my-bookings', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not logged in' });
+    }
+
+    const sql = `
+        SELECT rb.*, mr.name AS room_name
+        FROM room_bookings rb
+        JOIN meeting_rooms mr ON rb.room_id = mr.id
+        WHERE rb.user_email = ?
+        ORDER BY rb.booking_date DESC, rb.start_time
+    `;
+
+    db.query(sql, [req.session.user.email], (err, results) => {
+        if (err) {
+            console.error('Error fetching my bookings:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json(results);
+    });
+});
