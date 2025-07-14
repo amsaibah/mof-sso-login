@@ -2,394 +2,300 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ministry of Finance - Meeting Rooms</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f5f7fa;
-            color: #333;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ministry of Finance - Meeting Rooms</title>
 
-        .portal-header {
-            background: #1a3e6f;
-            color: white;
-            padding: 1.2rem 2.5rem;
-            border-bottom: 3px solid #ffffff;
-            display: flex;
-            align-items: center;
-        }
+  <!-- FontAwesome & Flatpickr -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-        .ministry-logo {
-            height: 70px;
-            margin-right: 1.5rem;
-        }
+  <style>
+    /* [Same styles as you already have, shortened here for brevity] */
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+    }
 
-        .header-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
+    .portal-header {
+      background: #1a3e6f;
+      color: white;
+      padding: 1.2rem 2.5rem;
+      display: flex;
+      align-items: center;
+    }
 
-        .user-bar {
-            background: #14305a;
-            padding: 0.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            color: white;
-        }
+    .ministry-logo {
+      height: 70px;
+      margin-right: 1.5rem;
+    }
 
-        .portal-grid {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            min-height: calc(100vh - 120px);
-        }
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
 
-        .side-nav {
-            background: white;
-            border-right: 1px solid #e0e0e0;
-            padding: 1.5rem;
-        }
+    .user-bar {
+      background: #14305a;
+      padding: 0.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      color: white;
+    }
 
-        .nav-item {
-            margin-bottom: 1rem;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #f0f0f0;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+    .portal-grid {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      min-height: calc(100vh - 120px);
+    }
 
-        .nav-item:hover {
-            color: #1a3e6f;
-            font-weight: 500;
-        }
+    .side-nav {
+      background: white;
+      padding: 1.5rem;
+      border-right: 1px solid #e0e0e0;
+    }
 
-        .nav-item.active {
-            color: #1a3e6f;
-            font-weight: 600;
-        }
+    .nav-item {
+      margin-bottom: 1rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+    }
 
-        .meeting-container {
-            padding: 2rem;
-            background: #f5f7fa;
-        }
+    .nav-item.active {
+      font-weight: 600;
+      color: #1a3e6f;
+    }
 
-        .meeting-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
+    .content-area {
+      padding: 2rem;
+    }
 
-        .meeting-title {
-            font-size: 1.8rem;
-            color: #1a3e6f;
-            font-weight: 600;
-        }
+    .meeting-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        .room-card {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
+    .meeting-title {
+      font-size: 1.8rem;
+      color: #1a3e6f;
+      font-weight: 600;
+    }
 
-        .room-name {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #1a3e6f;
-            margin-bottom: 0.5rem;
-        }
+    .date-picker {
+      margin: 1.5rem 0;
+      display: flex;
+      gap: 1rem;
+    }
 
-        .room-details {
-            color: #666;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
+    .date-input,
+    .refresh-btn {
+      padding: 8px 12px;
+      font-size: 1rem;
+      border-radius: 4px;
+    }
 
-        .date-picker {
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+    .date-input {
+      border: 1px solid #ccc;
+    }
 
-        .date-input {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            min-width: 150px;
-        }
+    .refresh-btn {
+      background: #1a3e6f;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
 
-        .refresh-btn {
-            padding: 8px 15px;
-            background: #1a3e6f;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+    .room-card {
+      background: white;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
 
-        .time-slots {
-            display: flex;
-            gap: 10px;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
+    .room-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #1a3e6f;
+    }
 
-        .time-slot {
-            padding: 8px 12px;
-            background: #e0e8f5;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: #1a3e6f;
-            font-weight: 500;
-        }
+    .room-details {
+      margin-bottom: 1rem;
+      color: #666;
+    }
 
-        .time-slot:hover {
-            background: #1a3e6f;
-            color: white;
-        }
+    .time-slots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
 
-        .time-slot.booked {
-            background: #f0f0f0;
-            color: #999;
-            cursor: not-allowed;
-        }
+    .time-slot {
+      padding: 8px 12px;
+      border-radius: 4px;
+      background: #e0e8f5;
+      cursor: pointer;
+      color: #1a3e6f;
+      font-weight: 500;
+    }
 
-        .booking-modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
+    .time-slot:hover {
+      background: #1a3e6f;
+      color: white;
+    }
 
-        .booking-modal-content {
-            background-color: #fff;
-            margin: 10% auto;
-            padding: 25px;
-            border-radius: 8px;
-            width: 50%;
-            max-width: 500px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
+    .time-slot.booked {
+      background: #ddd;
+      color: #888;
+      cursor: not-allowed;
+    }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
+    .more-link {
+      display: inline-block;
+      margin-top: 10px;
+      color: #1a3e6f;
+      text-decoration: underline;
+      cursor: pointer;
+    }
 
-        .modal-title {
-            font-size: 1.5rem;
-            color: #1a3e6f;
-            font-weight: 600;
-        }
+    /* Modal */
+    .booking-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+    }
 
-        .close-modal {
-            font-size: 1.5rem;
-            font-weight: bold;
-            cursor: pointer;
-            color: #666;
-        }
+    .booking-modal-content {
+      background: white;
+      width: 90%;
+      max-width: 400px;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+    }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #1a3e6f;
+      margin-bottom: 1rem;
+    }
 
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #444;
-        }
+    .form-group {
+      margin-bottom: 1rem;
+    }
 
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
+    .form-control {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
 
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 25px;
-            padding-top: 15px;
-            border-top: 1px solid #e0e0e0;
-        }
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
 
-        .btn {
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-        }
+    .btn {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
 
-        .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
-            border: 1px solid #ddd;
-        }
+    .btn-primary {
+      background: #1a3e6f;
+      color: white;
+    }
 
-        .btn-primary {
-            background: #1a3e6f;
-            color: white;
-            border: none;
-        }
+    .btn-secondary {
+      background: #ccc;
+      color: black;
+    }
 
-        .more-link {
-            color: #1a3e6f;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 1rem;
-        }
-
-        .more-link:hover {
-            text-decoration: underline;
-        }
-
-        .btn-back {
-            padding: 8px 15px;
-            background: #1a3e6f;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-right: 10px;
-        }
-
-        .btn-back:hover {
-            background: #14305a;
-        }
-
-        .btn-logout {
-            padding: 8px 15px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .btn-logout:hover {
-            background: #c82333;
-        }
-    </style>
+    .close-modal {
+      float: right;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
-    <!-- Ministry Header -->
-    <header class="portal-header">
-        <img src="mof-logo.png" alt="Ministry Logo" class="ministry-logo">
-        <div class="header-title">Ministry of Finance - Employee Portal</div>
-    </header>
+  <header class="portal-header">
+    <img src="mof-logo.png" class="ministry-logo" alt="Logo" />
+    <div class="header-title">Ministry of Finance - Employee Portal</div>
+  </header>
 
-    <div class="user-bar">
-        <div>Welcome, <strong>Fatematus Shaheba</strong> (IT Department)</div>
-        <div style="display: flex; align-items: center;">
-            <button class="btn-back" onclick="window.location.href='portal.html'">
-                <i class="fas fa-arrow-left"></i> Back to Home
-            </button>
-            <button class="btn-logout">Logout</button>
+  <div class="user-bar">
+    <div>Welcome, <strong id="username">User</strong> (<span id="department">Department</span>)</div>
+    <button class="refresh-btn btn-logout">Logout</button>
+  </div>
+
+  <div class="portal-grid">
+    <aside class="side-nav">
+      <h3>SSO Systems</h3>
+      <div class="nav-item"><i class="fas fa-folder"></i> Document Management</div>
+      <div class="nav-item"><i class="fas fa-calendar-alt"></i> Leave Request</div>
+      <div class="nav-item"><i class="fas fa-clock"></i> Timekeeping</div>
+      <div class="nav-item active"><i class="fas fa-door-open"></i> Meeting Rooms</div>
+      <div class="nav-item"><i class="fas fa-car"></i> Car Booking</div>
+    </aside>
+
+    <main class="content-area">
+      <div class="meeting-header">
+        <h1 class="meeting-title">Book a Room</h1>
+      </div>
+
+      <div class="date-picker">
+        <input type="text" id="booking-date" class="date-input" placeholder="Select Date" />
+        <button id="refresh-btn" class="refresh-btn">Refresh</button>
+      </div>
+
+      <div id="rooms-container"></div>
+    </main>
+  </div>
+
+  <!-- Booking Modal -->
+  <div id="booking-modal" class="booking-modal">
+    <div class="booking-modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="modal-title" id="modal-room-name">Book Room</div>
+      <form id="booking-form">
+        <input type="hidden" id="modal-room-id" />
+        <div class="form-group">
+          <label>Date</label>
+          <input type="text" id="modal-booking-date" class="form-control" readonly />
         </div>
+        <div class="form-group">
+          <label>Start Time</label>
+          <input type="text" id="modal-start-time" class="form-control" readonly />
+        </div>
+        <div class="form-group">
+          <label>End Time</label>
+          <input type="text" id="modal-end-time" class="form-control" readonly />
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm</button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <!-- Main Portal Content -->
-    <div class="portal-grid">
-        <!-- Side Navigation -->
-        <aside class="side-nav">
-            <h3>SSO Systems</h3>
-            <div class="nav-item"><i class="fas fa-folder"></i> Document Management</div>
-            <div class="nav-item"><i class="fas fa-calendar-alt"></i> Leave Request</div>
-            <div class="nav-item"><i class="fas fa-clock"></i> Timekeeping</div>
-            <div class="nav-item active"><i class="fas fa-door-open"></i> Meeting Rooms</div>
-            <div class="nav-item"><i class="fas fa-car"></i> Car Booking</div>
-            <div class="nav-item"><i class="fas fa-archive"></i> Document Storage</div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="content-area">
-            <div class="meeting-container">
-                <div class="meeting-header">
-                    <h1 class="meeting-title">Book a Room</h1>
-                </div>
-
-                <!-- Meeting Room Cards -->
-                <div class="room-card">
-                    <h3 class="room-name">Meeting Room A</h3>
-                    <div class="room-details">Meeting Room • 6 people • New York, US</div>
-                    <div class="time-slots">
-                        <div class="time-slot">11:00 AM</div>
-                        <div class="time-slot">11:30 AM</div>
-                        <div class="time-slot booked">12:00 PM</div>
-                        <div class="time-slot">12:30 PM</div>
-                        <div class="time-slot">1:00 PM</div>
-                    </div>
-                    <a href="#" class="more-link">More</a>
-                </div>
-
-                <div class="room-card">
-                    <h3 class="room-name">Meeting Room B</h3>
-                    <div class="room-details">Meeting Room • 6 people • New York, US</div>
-                    <div class="time-slots">
-                        <div class="time-slot">11:00 AM</div>
-                        <div class="time-slot">11:30 AM</div>
-                        <div class="time-slot">12:00 PM</div>
-                        <div class="time-slot booked">12:30 PM</div>
-                        <div class="time-slot">1:00 PM</div>
-                    </div>
-                    <a href="#" class="more-link">More</a>
-                </div>
-
-                <div class="room-card">
-                    <h3 class="room-name">Conference Room 1</h3>
-                    <div class="room-details">Conference Room • 12 people • New York, US</div>
-                    <div class="time-slots">
-                        <div class="time-slot booked">11:00 AM</div>
-                        <div class="time-slot booked">11:30 AM</div>
-                        <div class="time-slot">12:00 PM</div>
-                        <div class="time-slot">12:30 PM</div>
-                        <div class="time-slot">1:00 PM</div>
-                    </div>
-                    <a href="#" class="more-link">More</a>
-                </div>
-
-                <div class="room-card">
-                    <h3 class="room-name">Board Room</h3>
-                    <div class="room-details">Board Room • 20 people • New York, US</div>
-                    <div class="time-slots">
-                        <div class="time-slot">11:00 AM</div>
-                        <div class="time-slot">11:30 AM</div>
-                        <div class="time-slot">12:00 PM</div>
-                        <div class="time-slot booked">12:30 PM</div>
-                        <div class="time-slot booked">1:00 PM</div>
-                    </div>
-                    <a href="#" class="more-link">More</a>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script src="meeting_rooms.js"></script>
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="meeting_rooms.js"></script>
 </body>
 
 </html>
