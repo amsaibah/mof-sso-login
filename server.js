@@ -50,7 +50,9 @@ app.post('/login', (req, res) => {
 
     req.session.user = {
         email,
-        name: email.split('@')[0],     
+        name: email.split('@')[0].split('.').map(part => 
+            part.charAt(0).toUpperCase() + part.slice(1)
+        ).join(' '), // Convert "john.doe" to "John Doe"
         department: 'General'
     };
 
@@ -185,6 +187,10 @@ app.get('/leave_request.html', (req, res) => {
 
 // Leave Request Endpoints
 app.post('/submit-leave', (req, res) => {
+    console.log("POST /submit-leave called");
+    console.log("Session user:", req.session.user);
+    console.log("Request body:", req.body);
+
     if (!req.session.user) {
         return res.status(401).json({ success: false, message: 'Not logged in' });
     }
@@ -203,6 +209,8 @@ app.post('/submit-leave', (req, res) => {
             console.error('Leave submission error:', err);
             return res.status(500).json({ success: false, message: 'Leave submission failed' });
         }
+
+        console.log('Leave request inserted:', result);
         res.json({ success: true, message: 'Leave request submitted successfully' });
     });
 });
