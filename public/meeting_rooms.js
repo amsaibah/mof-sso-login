@@ -73,55 +73,58 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function renderRoomCard(room, bookings, dateStr) {
-        const card = document.createElement('div');
-        card.className = 'room-card';
+    const card = document.createElement('div');
+    card.className = 'room-card';
 
-        const bookedSlots = bookings.map(b => ({
-            start: b.start_time,
-            end: b.end_time
-        }));
+    const bookedSlots = bookings.map(b => ({
+        start: b.start_time,
+        end: b.end_time
+    }));
 
-        const timeSlots = [];
-        for (let hour = 8; hour <= 16; hour++) {
-            const timeStr = `${hour.toString().padStart(2, '0')}:00`;
-            if (timeStr === "12:00") continue; // Skip lunch time
+    const timeSlots = [];
+    const excludedTimes = ['12:00', '16:30', '17:00', '17:30'];
 
-            const isBooked = bookedSlots.some(slot =>
-                timeStr >= slot.start && timeStr < slot.end
-            );
+    for (let hour = 8; hour < 18; hour++) {
+        const timeStr = `${hour.toString().padStart(2, '0')}:00`;
 
-            timeSlots.push({ time: timeStr, booked: isBooked });
-        }
+        if (excludedTimes.includes(timeStr)) continue;
 
-        card.innerHTML = `
-            <h3 class="room-name">${room.name}</h3>
-            <div class="room-details">${room.capacity} people • ${room.description || ''}</div>
-            <div class="time-slots" id="slots-${room.id}">
-                ${timeSlots.map(slot => `
-                    <div class="time-slot ${slot.booked ? 'booked' : ''}" 
-                         data-room-id="${room.id}" 
-                         data-room-name="${room.name}" 
-                         data-date="${dateStr}" 
-                         data-time="${slot.time}">
-                        ${formatTime(slot.time)}
-                    </div>
-                `).join('')}
-            </div>
-        `;
+        const isBooked = bookedSlots.some(slot =>
+            timeStr >= slot.start && timeStr < slot.end
+        );
 
-        const slotElements = card.querySelectorAll('.time-slot:not(.booked)');
-        slotElements.forEach(slotEl => {
-            slotEl.addEventListener('click', () => {
-                const roomId = slotEl.dataset.roomId;
-                const roomName = slotEl.dataset.roomName;
-                const date = slotEl.dataset.date;
-                const time = slotEl.dataset.time;
-                openBookingModal(roomId, roomName, date, time);
-            });
-        });
-
-        roomsContainer.appendChild(card);
+        timeSlots.push({ time: timeStr, booked: isBooked });
     }
+
+    card.innerHTML = `
+        <h3 class="room-name">${room.name}</h3>
+        <div class="room-details">${room.capacity} people • ${room.description || ''}</div>
+        <div class="time-slots" id="slots-${room.id}">
+            ${timeSlots.map(slot => `
+                <div class="time-slot ${slot.booked ? 'booked' : ''}" 
+                     data-room-id="${room.id}" 
+                     data-room-name="${room.name}" 
+                     data-date="${dateStr}" 
+                     data-time="${slot.time}">
+                    ${formatTime(slot.time)}
+                </div>
+            `).join('')}
+        </div>
+    `;
+
+    const slotElements = card.querySelectorAll('.time-slot:not(.booked)');
+    slotElements.forEach(slotEl => {
+        slotEl.addEventListener('click', () => {
+            const roomId = slotEl.dataset.roomId;
+            const roomName = slotEl.dataset.roomName;
+            const date = slotEl.dataset.date;
+            const time = slotEl.dataset.time;
+            openBookingModal(roomId, roomName, date, time);
+        });
+    });
+
+    roomsContainer.appendChild(card);
+}
 
     function openBookingModal(roomId, roomName, date, startTime) {
         document.getElementById('modal-room-id').value = roomId;
