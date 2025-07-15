@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
             loadMyBookings();
         } catch (error) {
             console.error('Error loading rooms:', error);
-            roomsContainer.innerHTML = `<p>Error loading rooms: ${error.message}</p>`;
+            roomsContainer.innerHTML = `<div class="error-message">Error loading rooms: ${error.message}</div>`;
         }
     }
 
@@ -73,32 +73,33 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function renderRoomCard(room, bookings, dateStr) {
-    const card = document.createElement('div');
-    card.className = 'room-card';
+        const card = document.createElement('div');
+        card.className = 'room-card';
 
-    const bookedSlots = bookings.map(b => ({
-        start: b.start_time,
-        end: b.end_time
-    }));
+        const bookedSlots = bookings.map(b => ({
+            start: b.start_time,
+            end: b.end_time
+        }));
 
-    const timeSlots = [];
-    const excludedTimes = ['12:00', '16:30', '17:00', '17:30'];
+        const timeSlots = [];
+        const excludedTimes = ['12:00', '16:30', '17:00', '17:30'];
 
-    for (let hour = 8; hour < 18; hour++) {
-        const timeStr = `${hour.toString().padStart(2, '0')}:00`;
+        for (let hour = 8; hour < 18; hour++) {
+            const timeStr = `${hour.toString().padStart(2, '0')}:00`;
 
-        if (excludedTimes.includes(timeStr)) continue;
+            if (excludedTimes.includes(timeStr)) continue;
 
-        const isBooked = bookedSlots.some(slot =>
-            timeStr >= slot.start && timeStr < slot.end
-        );
+            const isBooked = bookedSlots.some(slot =>
+                timeStr >= slot.start && timeStr < slot.end
+            );
 
-        timeSlots.push({ time: timeStr, booked: isBooked });
-    }
+            timeSlots.push({ time: timeStr, booked: isBooked });
+        }
 
-    card.innerHTML = `
+        card.innerHTML = `
         <h3 class="room-name">${room.name}</h3>
         <div class="room-details">${room.capacity} people • ${room.description || ''}</div>
+        <div class="time-slots-header">Available time slots:</div>
         <div class="time-slots" id="slots-${room.id}">
             ${timeSlots.map(slot => `
                 <div class="time-slot ${slot.booked ? 'booked' : ''}" 
@@ -109,28 +110,29 @@ document.addEventListener('DOMContentLoaded', function () {
                     ${formatTime(slot.time)}
                 </div>
             `).join('')}
-        </div>
-    `;
+            </div>
+             `;
 
-    const slotElements = card.querySelectorAll('.time-slot:not(.booked)');
-    slotElements.forEach(slotEl => {
-        slotEl.addEventListener('click', () => {
-            const roomId = slotEl.dataset.roomId;
-            const roomName = slotEl.dataset.roomName;
-            const date = slotEl.dataset.date;
-            const time = slotEl.dataset.time;
-            openBookingModal(roomId, roomName, date, time);
+
+        const availableSlots = card.querySelectorAll('.time-slot:not(.booked)');
+        availableSlots.forEach(slotEl => {
+            slotEl.addEventListener('click', () => {
+                const roomId = slotEl.dataset.roomId;
+                const roomName = slotEl.dataset.roomName;
+                const date = slotEl.dataset.date;
+                const time = slotEl.dataset.time;
+                openBookingModal(roomId, roomName, date, time);
+            });
         });
-    });
 
-    roomsContainer.appendChild(card);
-}
+        roomsContainer.appendChild(card);
+    }
 
     function openBookingModal(roomId, roomName, date, startTime) {
         document.getElementById('modal-room-id').value = roomId;
         document.getElementById('modal-room-name').textContent = `Book ${roomName}`;
-        document.getElementById('modal-booking-date').value = date;
-        document.getElementById('modal-start-time').value = startTime;
+        document.getElementById('modal-booking-date').value = formatDisplayDate(date);
+        document.getElementById('modal-start-time').value = formatTime(startTime);
 
         const [hours, minutes] = startTime.split(':');
         const endTime = new Date(2000, 0, 1, parseInt(hours), parseInt(minutes));
@@ -183,19 +185,51 @@ document.addEventListener('DOMContentLoaded', function () {
             const bookings = await res.json();
 
             if (bookings.length === 0) {
-                container.innerHTML = '<p>You have no upcoming bookings.</p>';
+                container.innerHTML = '<div class="no-bookings">You have no upcoming bookings.</div>';
                 return;
             }
 
             container.innerHTML = bookings.map(b => `
-                <div style="background:#f0f4fa; padding:10px; margin-bottom:10px; border-radius:6px;">
-                    <strong>${b.room_name}</strong> — 
-                    ${b.booking_date} from ${b.start_time} to ${b.end_time}
+            <div class="booking-card">
+                <div class="booking-info">
+                    <div class="booking-room">${b.room_name}</div>
+                    <div class="booking-time">
+                        ${formatDisplayDate(b.booking_date)} • 
+                        ${formatTime(b.start_time)} - ${formatTime(b.end_time)}
+                    </div>
                 </div>
-            `).join('');
+                <button class="btn-cancel cancel-booking-btn" data-booking-id="${b.id}">
+                    Cancel
+                </button>
+            </div>
+        `).join('');
+
+            // Attach cancel handlers
+            container.querySelectorAll('.cancel-booking-btn').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const bookingId = button.dataset.bookingId;
+                    if (confirm('Are you sure you want to cancel this booking?')) {
+                        try {
+                            const res = await fetch(`/cancel-booking/${bookingId}`, {
+                                method: 'DELETE'
+                            });
+                            const result = await res.json();
+                            if (result.success) {
+                                alert('Booking cancelled');
+                                loadRooms(); // refresh rooms and my bookings
+                            } else {
+                                alert('Cancellation failed: ' + result.message);
+                            }
+                        } catch (err) {
+                            console.error('Cancel error:', err);
+                            alert('Error cancelling booking.');
+                        }
+                    }
+                });
+            });
         } catch (err) {
             console.error(err);
-            container.innerHTML = '<p>Error loading your bookings.</p>';
+            container.innerHTML = '<div class="error-message">Error loading your bookings. Please try again.</div>';
         }
     }
 
@@ -203,6 +237,12 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.addEventListener('click', () => {
             bookingModal.style.display = 'none';
         });
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === bookingModal) {
+            bookingModal.style.display = 'none';
+        }
     });
 
     refreshBtn.addEventListener('click', loadRooms);
@@ -215,6 +255,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function formatDate(date) {
         return date.toISOString().split('T')[0];
+    }
+
+    function formatDisplayDate(dateStr) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateStr).toLocaleDateString('en-US', options);
     }
 
     function formatTime(timeStr) {
