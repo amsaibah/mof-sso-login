@@ -159,6 +159,57 @@
             border-bottom: none;
         }
 
+        /* Action buttons container */
+        .bookings-table td:last-child {
+            white-space: nowrap;
+        }
+
+        /* Action buttons styling */
+        .action-btn {
+            padding: 5px 10px;
+            margin-right: 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            color: white;
+            display: inline-block;
+            text-align: center;
+            min-width: 60px;
+            box-sizing: border-box;
+            font-family: inherit;
+            line-height: 1.5;
+            vertical-align: middle;
+            transition: all 0.2s;
+        }
+
+        .action-btn:last-child {
+            margin-right: 0;
+        }
+
+        .view-btn {
+            background-color: #1a3e6f;
+        }
+
+        .edit-btn {
+            background-color: #708090;
+        }
+
+        .cancel-btn {
+            background-color: #dc3545;
+        }
+
+        .action-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* Ensure actions column has enough width */
+        .bookings-table th:nth-child(9),
+        .bookings-table td:nth-child(9) {
+            min-width: 220px;
+        }
+
         .status-badge {
             padding: 5px 10px;
             border-radius: 20px;
@@ -185,48 +236,6 @@
         .status-completed {
             background-color: #708090;
             color: white;
-        }
-
-        .action-btn {
-            padding: 3px 7px;
-            margin-right: 5px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            background-color: #1a3e6f;
-            color: white;
-            transition: background-color 0.2s;
-            display: inline-block;
-            text-align: center;
-            width: 70px;
-            box-sizing: border-box;
-            font-family: inherit;
-            line-height: 1.5;
-        }
-
-        .action-btn:hover {
-            background-color: #14305a;
-        }
-
-        a.action-btn {
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            min-width: 60px;
-        }
-
-        .view-btn,
-        .cancel-btn {
-            background-color: #1a3e6f;
-            color: white;
-            border: none;
-        }
-
-        .edit-btn {
-            background-color: #708090;
-            color: white;
-            border: none;
         }
 
         .modal {
@@ -402,9 +411,12 @@
         <!-- Side Navigation -->
         <aside class="side-nav">
             <h3>SSO Systems</h3>
-            <div class="nav-item" onclick="window.location.href='document_management.html'"><i class="fas fa-folder"></i> Document Management</div>
-            <div class="nav-item" onclick="window.location.href='leave_request.html'"><i class="fas fa-calendar-alt"></i> Leave Request</div>
-            <div class="nav-item" onclick="window.location.href='meeting_rooms.html'"><i class="fas fa-door-open"></i> Meeting Rooms</div>
+            <div class="nav-item" onclick="window.location.href='document_management.html'"><i
+                    class="fas fa-folder"></i> Document Management</div>
+            <div class="nav-item" onclick="window.location.href='leave_request.html'"><i
+                    class="fas fa-calendar-alt"></i> Leave Request</div>
+            <div class="nav-item" onclick="window.location.href='meeting_rooms.html'"><i class="fas fa-door-open"></i>
+                Meeting Rooms</div>
             <div class="nav-item active"><i class="fas fa-car"></i> Car Booking</div>
         </aside>
 
@@ -471,7 +483,8 @@
             <form id="booking-form">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="vehicle-type-select" class="form-label">Vehicle Type<span class="required">*</span></label>
+                        <label for="vehicle-type-select" class="form-label">Vehicle Type<span
+                                class="required">*</span></label>
                         <select name="vehicleType" id="vehicle-type-select" class="form-control" required>
                             <option value="">Select Vehicle Type</option>
                             <option value="sedan">Sedan (Toyota Corolla)</option>
@@ -498,7 +511,8 @@
                     </div>
                     <div class="form-group">
                         <label for="passengers" class="form-label">Number of Passengers</label>
-                        <input type="number" name="passengers" id="passengers" class="form-control" min="1" max="20" placeholder="1">
+                        <input type="number" name="passengers" id="passengers" class="form-control" min="1" max="20"
+                            placeholder="1">
                     </div>
                 </div>
 
@@ -515,12 +529,14 @@
 
                 <div class="form-group">
                     <label for="destination" class="form-label">Destination<span class="required">*</span></label>
-                    <input type="text" name="destination" id="destination" class="form-control" placeholder="Enter destination address" required>
+                    <input type="text" name="destination" id="destination" class="form-control"
+                        placeholder="Enter destination address" required>
                 </div>
 
                 <div class="form-group">
                     <label for="purpose" class="form-label">Purpose of Trip<span class="required">*</span></label>
-                    <textarea name="purpose" id="purpose" class="form-control" placeholder="Describe the purpose of the trip" required></textarea>
+                    <textarea name="purpose" id="purpose" class="form-control"
+                        placeholder="Describe the purpose of the trip" required></textarea>
                 </div>
 
                 <div class="form-row">
@@ -532,8 +548,10 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="contact-number" class="form-label">Contact Number<span class="required">*</span></label>
-                        <input type="tel" name="contactNumber" id="contact-number" class="form-control" placeholder="Enter your contact number" required>
+                        <label for="contact-number" class="form-label">Contact Number<span
+                                class="required">*</span></label>
+                        <input type="tel" name="contactNumber" id="contact-number" class="form-control"
+                            placeholder="Enter your contact number" required>
                     </div>
                 </div>
 
