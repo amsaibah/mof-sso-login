@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ministry of Finance - Car Booking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .portal-header {
+            background: #1a3e6f;
+            color: white;
+            padding: 1.2rem 2.5rem;
+            border-bottom: 3px solid #ffffff;
+            display: flex;
+            align-items: center;
+        }
+
+        .ministry-logo {
+            height: 70px;
+            margin-right: 1.5rem;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .user-bar {
+            background: #14305a;
+            padding: 0.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+        }
+
+        .portal-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: calc(100vh - 120px);
+        }
+
+        .side-nav {
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 1.5rem;
+        }
+
+        .nav-item {
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            color: #1a3e6f;
+            font-weight: 500;
+        }
+
+        .nav-item.active {
+            color: #1a3e6f;
+            font-weight: 600;
+        }
+
+        .booking-container {
+            padding: 2rem;
+            background: #f5f7fa;
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .booking-title {
+            font-size: 1.8rem;
+            color: #1a3e6f;
+            font-weight: 600;
+        }
+
+        .booking-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            min-width: 150px;
+        }
+
+        .search-box {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 250px;
+        }
+
+        .search-btn {
+            padding: 8px 15px;
+            background: #1a3e6f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .new-booking-btn {
+            padding: 10px 15px;
+            background: #1a3e6f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bookings-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .bookings-table th {
+            background: #f0f4f8;
+            padding: 12px 15px;
+            text-align: left;
+            color: #1a3e6f;
+            font-weight: 600;
+        }
+
+        .bookings-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .bookings-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background-color: #f6c156;
+            color: white;
+        }
+
+        .status-approved {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .status-rejected {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .status-completed {
+            background-color: #708090;
+            color: white;
+        }
+
+        .action-btn {
+            padding: 3px 7px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            background-color: #1a3e6f;
+            color: white;
+            transition: background-color 0.2s;
+            display: inline-block;
+            text-align: center;
+            width: 70px;
+            box-sizing: border-box;
+            font-family: inherit;
+            line-height: 1.5;
+        }
+
+        .action-btn:hover {
+            background-color: #14305a;
+        }
+
+        a.action-btn {
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            min-width: 60px;
+        }
+
+        .view-btn,
+        .cancel-btn {
+            background-color: #1a3e6f;
+            color: white;
+            border: none;
+        }
+
+        .edit-btn {
+            background-color: #708090;
+            color: white;
+            border: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 25px;
+            border-radius: 8px;
+            width: 60%;
+            max-width: 700px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: #1a3e6f;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #444;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            border-color: #1a3e6f;
+            outline: none;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-primary {
+            background: #1a3e6f;
+            color: white;
+            border: none;
+        }
+
+        .btn-back {
+            padding: 8px 15px;
+            background: #1a3e6f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 10px;
+        }
+
+        .btn-back:hover {
+            background: #14305a;
+        }
+
+        .user-bar>div:last-child {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-logout {
+            padding: 8px 15px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            background: #c82333;
+        }
+
+        .required {
+            color: #f44336;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Ministry Header -->
+    <header class="portal-header">
+        <img src="mof-logo.png" alt="Ministry Logo" class="ministry-logo">
+        <div class="header-title">Ministry of Finance - Employee Portal</div>
+    </header>
+
+    <div class="user-bar">
+        <div>Welcome, <strong>Fatematus Shaheba</strong> (IT Department)</div>
+        <div style="display: flex; align-items: center;">
+            <button class="btn-back" onclick="window.location.href='portal.html'">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </button>
+            <button class="btn-logout">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Portal Content -->
+    <div class="portal-grid">
+        <!-- Side Navigation -->
+        <aside class="side-nav">
+            <h3>SSO Systems</h3>
+            <div class="nav-item" onclick="window.location.href='document_management.html'"><i class="fas fa-folder"></i> Document Management</div>
+            <div class="nav-item" onclick="window.location.href='leave_request.html'"><i class="fas fa-calendar-alt"></i> Leave Request</div>
+            <div class="nav-item" onclick="window.location.href='meeting_rooms.html'"><i class="fas fa-door-open"></i> Meeting Rooms</div>
+            <div class="nav-item active"><i class="fas fa-car"></i> Car Booking</div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content-area">
+            <div class="booking-container">
+                <div class="booking-header">
+                    <h1 class="booking-title">Car Booking Management</h1>
+                    <button class="new-booking-btn" id="new-booking-btn">
+                        <i class="fas fa-plus"></i> New Booking
+                    </button>
+                </div>
+
+                <div class="booking-filters">
+                    <select class="filter-select" id="vehicle-type">
+                        <option value="all">All Vehicle Types</option>
+                        <option value="sedan">Sedan</option>
+                        <option value="suv">SUV</option>
+                        <option value="van">Van</option>
+                        <option value="bus">Bus</option>
+                    </select>
+
+                    <select class="filter-select" id="booking-status">
+                        <option value="all">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="completed">Completed</option>
+                    </select>
+
+                    <input type="text" class="search-box" id="booking-search" placeholder="Search bookings...">
+                    <button class="search-btn" id="search-btn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+
+                <table class="bookings-table">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Vehicle Type</th>
+                            <th>License Plate</th>
+                            <th>Booking Date</th>
+                            <th>Duration</th>
+                            <th>Destination</th>
+                            <th>Purpose</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookings-table-body"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- New Booking Modal -->
+    <div id="booking-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create New Car Booking</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="booking-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vehicle-type-select" class="form-label">Vehicle Type<span class="required">*</span></label>
+                        <select name="vehicleType" id="vehicle-type-select" class="form-control" required>
+                            <option value="">Select Vehicle Type</option>
+                            <option value="sedan">Sedan (Toyota Corolla)</option>
+                            <option value="suv">SUV (Toyota Prado)</option>
+                            <option value="van">Van (Toyota Hiace)</option>
+                            <option value="bus">Bus (Coaster)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="booking-date" class="form-label">Booking Date<span class="required">*</span></label>
+                        <input type="date" name="bookingDate" id="booking-date" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="duration" class="form-label">Duration<span class="required">*</span></label>
+                        <select name="duration" id="duration" class="form-control" required>
+                            <option value="">Select Duration</option>
+                            <option value="half-day">Half Day (4 hours)</option>
+                            <option value="full-day">Full Day (8 hours)</option>
+                            <option value="multi-day">Multi-Day</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="passengers" class="form-label">Number of Passengers</label>
+                        <input type="number" name="passengers" id="passengers" class="form-control" min="1" max="20" placeholder="1">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pickup-time" class="form-label">Pickup Time<span class="required">*</span></label>
+                        <input type="time" name="pickupTime" id="pickup-time" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="return-time" class="form-label">Expected Return Time</label>
+                        <input type="time" name="returnTime" id="return-time" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="destination" class="form-label">Destination<span class="required">*</span></label>
+                    <input type="text" name="destination" id="destination" class="form-control" placeholder="Enter destination address" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="purpose" class="form-label">Purpose of Trip<span class="required">*</span></label>
+                    <textarea name="purpose" id="purpose" class="form-control" placeholder="Describe the purpose of the trip" required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="driver-required" class="form-label">Driver Required</label>
+                        <select name="driverRequired" id="driver-required" class="form-control">
+                            <option value="yes">Yes</option>
+                            <option value="no">No (Self Drive)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-number" class="form-label">Contact Number<span class="required">*</span></label>
+                        <input type="tel" name="contactNumber" id="contact-number" class="form-control" placeholder="Enter your contact number" required>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sample car booking data
+        let bookings = [
+            {
+                id: "CB001",
+                vehicleType: "Toyota Corolla",
+                licensePlate: "MOF-1234",
+                bookingDate: "2024-01-15",
+                duration: "Full Day",
+                destination: "Central Bank, Dhaka",
+                purpose: "Official Meeting with Governor",
+                status: "approved",
+                bookedBy: "Ahmad Rahman",
+                department: "Finance",
+                pickupTime: "09:00",
+                passengers: 3
+            },
+            {
+                id: "CB002",
+                vehicleType: "Honda Civic",
+                licensePlate: "MOF-5678",
+                bookingDate: "2024-01-16",
+                duration: "Half Day",
+                destination: "Ministry of Planning",
+                purpose: "Document Submission",
+                status: "pending",
+                bookedBy: "Sarah Ahmed",
+                department: "Planning",
+                pickupTime: "10:00",
+                passengers: 2
+            },
+            {
+                id: "CB003",
+                vehicleType: "Toyota Hiace",
+                licensePlate: "MOF-9012",
+                bookingDate: "2024-01-17",
+                duration: "Full Day",
+                destination: "Chittagong Regional Office",
+                purpose: "Field Inspection and Audit",
+                status: "completed",
+                bookedBy: "Mohammad Ali",
+                department: "Audit",
+                pickupTime: "08:00",
+                passengers: 8
+            },
+            {
+                id: "CB004",
+                vehicleType: "Toyota Prado",
+                licensePlate: "MOF-3456",
+                bookingDate: "2024-01-18",
+                duration: "Multi-Day",
+                destination: "Sylhet Division Office",
+                purpose: "Regional Conference",
+                status: "rejected",
+                bookedBy: "Fatema Khatun",
+                department: "Administration",
+                pickupTime: "07:00",
+                passengers: 5
+            }
+        ];
+
+        // Modal functionality
+        const modal = document.getElementById('booking-modal');
+        const newBookingBtn = document.getElementById('new-booking-btn');
+        const closeModalBtns = document.querySelectorAll('.close-modal');
+        const bookingForm = document.getElementById('booking-form');
+
+        newBookingBtn.addEventListener('click', () => {
+            modal.style.display = 'block';
+            // Set minimum date to today
+            document.getElementById('booking-date').min = new Date().toISOString().split('T')[0];
+        });
+
+        closeModalBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Form submission
+        bookingForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(bookingForm);
+            const newBooking = {
+                id: 'CB' + String(bookings.length + 1).padStart(3, '0'),
+                vehicleType: getVehicleTypeName(formData.get('vehicleType')),
+                licensePlate: 'MOF-' + Math.floor(Math.random() * 9999).toString().padStart(4, '0'),
+                bookingDate: formData.get('bookingDate'),
+                duration: getDurationName(formData.get('duration')),
+                destination: formData.get('destination'),
+                purpose: formData.get('purpose'),
+                status: 'pending',
+                bookedBy: 'Fatematus Shaheba',
+                department: 'IT Department',
+                pickupTime: formData.get('pickupTime'),
+                passengers: formData.get('passengers') || 1
+            };
+
+            bookings.unshift(newBooking);
+            renderBookings();
+            modal.style.display = 'none';
+            bookingForm.reset();
+            
+            alert('Booking submitted successfully! Your booking ID is: ' + newBooking.id);
+        });
+
+        function getVehicleTypeName(type) {
+            const types = {
+                'sedan': 'Toyota Corolla',
+                'suv': 'Toyota Prado',
+                'van': 'Toyota Hiace',
+                'bus': 'Coaster Bus'
+            };
+            return types[type] || type;
+        }
+
+        function getDurationName(duration) {
+            const durations = {
+                'half-day': 'Half Day',
+                'full-day': 'Full Day',
+                'multi-day': 'Multi-Day'
+            };
+            return durations[duration] || duration;
+        }
+
+        // Render bookings table
+        function renderBookings(bookingsToRender = bookings) {
+            const tbody = document.getElementById('bookings-table-body');
+            tbody.innerHTML = '';
+
+            bookingsToRender.forEach(booking => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${booking.id}</td>
+                    <td>${booking.vehicleType}</td>
+                    <td>${booking.licensePlate}</td>
+                    <td>${booking.bookingDate}</td>
+                    <td>${booking.duration}</td>
+                    <td>${booking.destination}</td>
+                    <td>${booking.purpose}</td>
+                    <td><span class="status-badge status-${booking.status}">${booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewBooking('${booking.id}')">View</button>
+                        <button class="action-btn edit-btn" onclick="editBooking('${booking.id}')">Edit</button>
+                        <button class="action-btn cancel-btn" onclick="cancelBooking('${booking.id}')">Cancel</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Search and filter functionality
+        function filterBookings() {
+            const searchTerm = document.getElementById('booking-search').value.toLowerCase();
+            const vehicleTypeFilter = document.getElementById('vehicle-type').value;
+            const statusFilter = document.getElementById('booking-status').value;
+
+            const filtered = bookings.filter(booking => {
+                const matchesSearch = booking.vehicleType.toLowerCase().includes(searchTerm) ||
+                                    booking.destination.toLowerCase().includes(searchTerm) ||
+                                    booking.purpose.toLowerCase().includes(searchTerm) ||
+                                    booking.id.toLowerCase().includes(searchTerm);
+                
+                const matchesVehicleType = vehicleTypeFilter === 'all' || 
+                                          booking.vehicleType.toLowerCase().includes(vehicleTypeFilter);
+                
+                const matchesStatus = statusFilter === 'all' || booking.status === statusFilter;
+
+                return matchesSearch && matchesVehicleType && matchesStatus;
+            });
+
+            renderBookings(filtered);
+        }
+
+        // Event listeners for filters
+        document.getElementById('booking-search').addEventListener('input', filterBookings);
+        document.getElementById('vehicle-type').addEventListener('change', filterBookings);
+        document.getElementById('booking-status').addEventListener('change', filterBookings);
+        document.getElementById('search-btn').addEventListener('click', filterBookings);
+
+        // Action functions
+        function viewBooking(id) {
+            const booking = bookings.find(b => b.id === id);
+            if (booking) {
+                alert(`Booking Details:\n\nID: ${booking.id}\nVehicle: ${booking.vehicleType}\nDate: ${booking.bookingDate}\nDestination: ${booking.destination}\nPurpose: ${booking.purpose}\nStatus: ${booking.status}\nBooked by: ${booking.bookedBy}\nDepartment: ${booking.department}`);
+            }
+        }
+
+        function editBooking(id) {
+            alert('Edit functionality would open a form to modify booking details.');
+        }
+
+        function cancelBooking(id) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                const bookingIndex = bookings.findIndex(b => b.id === id);
+                if (bookingIndex !== -1) {
+                    bookings[bookingIndex].status = 'rejected';
+                    renderBookings();
+                    alert('Booking cancelled successfully.');
+                }
+            }
+        }
+
+        // Initialize
+        renderBookings();
+    </script>
+</body>
+
+</html>
