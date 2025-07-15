@@ -376,3 +376,89 @@ app.delete('/cancel-booking/:id', (req, res) => {
         res.json({ success: true, message: 'Booking cancelled successfully' });
     });
 });
+
+// Fetch all cars
+app.get('/cars', (req, res) => {
+  const query = 'SELECT * FROM cars';
+  db.query(query, (err, results) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    res.json(results);
+  });
+});
+
+// Check availability of s specific car
+app.get('/car-availability/:carId', (req, res) => {
+  const { carId } = req.params;
+  const { date } = req.query;
+
+  const query = `
+    SELECT start_time, end_time 
+    FROM car_bookings 
+    WHERE car_id = ? AND booking_date = ?
+  `;
+  db.query(query, [carId, date], (err, results) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    res.json(results);
+  });
+});
+
+// Book a car
+app.post('/book-car', (req, res) => {
+  const { roomId: carId, bookingDate, startTime, endTime } = req.body;
+  const userId = req.session.user?.id;
+
+  if (!userId) return res.status(401).json({ success: false, error: 'Unauthorized' });
+
+  const overlapCheck = `
+    SELECT * FROM car_bookings
+    WHERE car_id = ? AND booking_date = ?
+      AND ((start_time < ? AND end_time > ?) OR (start_time < ? AND end_time > ?))
+  `;
+  db.query(overlapCheck, [carId, bookingDate, endTime, endTime, startTime, startTime], (err, results) => {
+    if (err) return res.status(500).json({ success: false, error: 'Database error' });
+
+    if (results.length > 0) {
+      return res.status(409).json({ success: false, error: 'Slot already booked' });
+    }
+
+    const insertQuery = `
+      INSERT INTO car_bookings (user_id, car_id, booking_date, start_time, end_time)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+    db.query(insertQuery, [userId, carId, bookingDate, startTime, endTime], (err) => {
+      if (err) return res.status(500).json({ success: false, error: 'Insert failed' });
+      res.json({ success: true });
+    });
+  });
+});
+
+// Fetch my bookings
+app.get('/my-bookings', (req, res) => {
+  const userId = req.session.user?.id;
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+  const query = `
+    SELECT cb.id, cb.booking_date, cb.start_time, cb.end_time, c.name AS room_name
+    FROM car_bookings cb
+    JOIN cars c ON cb.car_id = c.id
+    WHERE cb.user_id = ?
+    ORDER BY cb.booking_date, cb.start_time
+  `;
+  db.query(query, [userId], (err, results) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    res.json(results);
+  });
+});
+
+// Cancel a booking
+app.delete('/cancel-booking/:bookingId', (req, res) => {
+  const userId = req.session.user?.id;
+  const bookingId = req.params.bookingId;
+
+  const query = 'DELETE FROM car_bookings WHERE id = ? AND user_id = ?';
+  db.query(query, [bookingId, userId], (err, result) => {
+    if (err) return res.status(500).json({ success: false, message: 'Database error' });
+    if (result.affectedRows === 0) return res.status(404).json({ success: false, message: 'Not found or not yours' });
+    res.json({ success: true });
+  });
+});
