@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ministry of Finance - Employee Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .portal-header {
+            background: #1a3e6f;
+            color: white;
+            padding: 1.2rem 2.5rem;
+            border-bottom: 3px solid #ffffff;
+            display: flex;
+            align-items: center;
+        }
+
+        .ministry-logo {
+            height: 70px;
+            margin-right: 1.5rem;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .user-bar {
+            background: #14305a;
+            padding: 0.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .sso-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #1a3e6f;
+        }
+
+        .services-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.2s;
+            min-width: 250px;
+            flex: 1;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .service-card h2 {
+            color: #1a3e6f;
+            margin-top: 0;
+        }
+
+        .service-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .access-btn {
+            background: #1a3e6f;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .access-btn:hover {
+            background: #14305a;
+        }
+
+        .btn-logout {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 1000px) {
+            .services-container {
+                flex-wrap: wrap;
+            }
+            .service-card {
+                min-width: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Ministry Header -->
+    <header class="portal-header">
+        <img src="mof-logo.png" alt="Ministry Logo" class="ministry-logo">
+        <div class="header-title">Ministry of Finance - Employee Portal</div>
+    </header>
+
+    <!-- User Bar -->
+    <div class="user-bar">
+        <div>Welcome, <strong>Fatematus Shaheba</strong> (IT Department)</div>
+        <div>
+            <button class="btn-logout">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="sso-title">
+            <h1>Ministry of Finance</h1>
+            <h2>Single Sign-On Portal</h2>
+            <p>Access all ministry systems with one account</p>
+        </div>
+
+        <div class="services-container">
+            <!-- Document Management -->
+            <div class="service-card">
+                <h2>Document Management</h2>
+                <p>Manage and access ministry documents</p>
+                <a href="#" class="access-btn">Access System</a>
+            </div>
+
+            <!-- Leave Request -->
+            <div class="service-card">
+                <h2>Leave Request</h2>
+                <p>Submit and track leave applications</p>
+                <a href="#" class="access-btn">Access System</a>
+            </div>
+
+            <!-- Meeting Rooms -->
+            <div class="service-card">
+                <h2>Meeting Rooms</h2>
+                <p>Book and manage meeting room reservations</p>
+                <a href="#" class="access-btn">Access System</a>
+            </div>
+
+            <!-- Car Booking -->
+            <div class="service-card">
+                <h2>Car Booking</h2>
+                <p>Reserve ministry vehicles for official use</p>
+                <a href="#" class="access-btn">Access System</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
