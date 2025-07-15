@@ -404,7 +404,7 @@ app.get('/car-availability/:carId', (req, res) => {
 
 // Book a car
 app.post('/book-car', (req, res) => {
-  const { roomId: carId, bookingDate, startTime, endTime } = req.body;
+  const { carId, bookingDate, startTime, endTime } = req.body;
   const userId = req.session.user?.id;
 
   if (!userId) return res.status(401).json({ success: false, error: 'Unauthorized' });
