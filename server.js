@@ -349,3 +349,30 @@ app.get('/my-bookings', (req, res) => {
         res.json(results);
     });
 });
+
+app.delete('/cancel-booking/:id', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ success: false, message: 'Not logged in' });
+    }
+
+    const bookingId = req.params.id;
+    const userEmail = req.session.user.email;
+
+    const sql = `
+        DELETE FROM room_bookings 
+        WHERE id = ? AND user_email = ?
+    `;
+
+    db.query(sql, [bookingId, userEmail], (err, result) => {
+        if (err) {
+            console.error('Error cancelling booking:', err);
+            return res.status(500).json({ success: false, message: 'Database error' });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Booking not found or unauthorized' });
+        }
+
+        res.json({ success: true, message: 'Booking cancelled successfully' });
+    });
+});
